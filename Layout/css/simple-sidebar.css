@@ -1,0 +1,351 @@
+/*!
+ * Start Bootstrap - Simple Sidebar (http://startbootstrap.com/)
+ * Copyright 2013-2016 Start Bootstrap
+ * Licensed under MIT (https://github.com/BlackrockDigital/startbootstrap/blob/gh-pages/LICENSE)
+ */
+
+ body {
+    overflow-x: hidden;
+ }
+
+/* Toggle Styles */
+#wrapper {
+    padding-left: 0;
+    -webkit-transition: all 0.5s ease;
+    -moz-transition: all 0.5s ease;
+    -o-transition: all 0.5s ease;
+    transition: all 0.5s ease;
+}
+
+#wrapper.toggled {
+    padding-left: 250px;
+}
+
+img#sidebar-icon {
+    max-width: 85%;
+    max-height: 80%;
+    border-radius: 15%;
+    margin: 5px;
+    float: left;
+    padding: 3px;
+    background-color: #ffffff;
+}
+
+img#arrow {
+    float: right;
+    padding-top: 9px;
+    margin-right: 5px;
+    height: 10%;
+    width: 10%;
+}
+
+img#arrow2 {
+    float: right;
+    padding-top: 9px;
+    margin-right: 5px;
+    width: 22px;
+    /*height: 20px;*/
+}
+
+.modalclose {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    display: block;
+    width: 22px;
+    height: 22px;
+    background: url(/Layout/image/icons8-Delete-26.png);
+    float: right;
+    z-index: 2;
+}
+
+/* title bar style rule */
+#titlebar {
+    display: flex;
+    position:relative;
+    top:0;
+    left:0;
+    width:100%;
+    height:45px;
+    background-color: #03a9f4;
+    border-bottom: groove;
+}
+
+#titlebar > div {
+    flex: 1;
+}
+
+/* title on the titlebar rule */
+#title {
+    position: relative;
+    margin: auto;
+    color: white;
+    font-family: 'Enriqueta', arial, serif;
+    line-height: 1.25; margin: 5px 0 10px;
+    font-size: 2vw;
+    font-weight: bold;
+    text-align: center;
+    float: right;
+}
+
+#header-div {
+    display: flex;
+    padding-bottom: 10px;
+}
+
+#header-div > div {
+    flex: 1;
+}
+
+/* rule for the popup container */
+div.popupContainer{
+    display: none;
+    border-radius: 15%;
+    background: #ecf0f1;
+    width: 350px;
+    border-radius: 5px;
+    padding-top: 5px;
+    padding: 10px;
+}
+
+div.list-div {
+    width: 75%;
+    margin: 0 auto;
+}
+
+.popupContainer input[type="text"], .popupContainer input[type="password"] {
+    padding: 7px 10px;
+    margin: auto;
+    width: 96%;
+    display: block;
+    font-size: 18px;
+    border-radius: 5px;
+    border: none;
+    -webkit-transition: 0.3s linear;
+    -moz-transition: 0.3s linear;
+    -o-transition: 0.3s linear;
+    transition: 0.3s linear;
+}
+.popupContainer input[type="text"]:focus, .popupContainer input[type="password"]:focus {
+    outline: none;
+    box-shadow: 0 0 1px 1px #1abc9c;
+}
+
+/* rule for the popup title */
+.popup-title {
+    color: #111;
+    font-family: 'Helvetica Neue', sans-serif;
+    font-size: 20px; font-weight: bold;
+    letter-spacing: -1px; line-height: 1;
+    text-align: center;
+    padding: 5px;
+    margin-bottom: 5px;
+}
+
+/* rule for the overlay */
+#lean_overlay {
+    position: fixed;
+    z-index:100;
+    top: 0px;
+    left: 0px;
+    height:100%;
+    width:100%;
+    background: #000;
+    display: none;
+}
+
+#login-container {
+    display: none;
+}
+
+#registration-container{
+    display: none;
+}
+
+.error-box {
+    display: none;
+    border: 1px solid;
+    margin: 10px 0px;
+    padding:15px 10px 15px 50px;
+    background-repeat: no-repeat;
+    background-position: 10px center;
+    color: #D8000C;
+    background-color: #FFBABA;
+}
+
+#log-action-box {
+    margin-top: 10px;
+}
+
+#reg-action-box {
+    margin-top: 10px;
+}
+
+.popupContainer a:hover, .popupContainer a:active {
+    text-decoration: none;
+}
+
+
+.submit-btn {
+    padding: 7px 5px;
+    margin: auto;
+    width: 96%;
+    display: block;
+    font-size: 18px;
+    border-radius: 5px;
+    border: none;
+    text-align: center;
+    background-color: #5bc0de;
+}
+
+#pwd-strength {
+    display: none;
+    padding: 3px 5px;
+    margin: auto;
+    width: 96%;
+    height: 25px;
+    font-weight: bold;
+}
+
+#list-container {
+    display: flex;
+}
+
+#list-container > div {
+    flex: 1;
+}
+
+#sidebar-wrapper {
+    z-index: 1000;
+    position: fixed;
+    left: 250px;
+    width: 0;
+    height: 100%;
+    margin-left: -250px;
+    overflow-y: auto;
+    background: #245269;
+    -webkit-transition: all 0.5s ease;
+    -moz-transition: all 0.5s ease;
+    -o-transition: all 0.5s ease;
+    transition: all 0.5s ease;
+}
+
+.booking-form {
+    display: block;
+    width: 100%;
+    height: 34px;
+    padding: 6px 12px;
+    font-size: 14px;
+    line-height: 1.42857143;
+    color: #555;
+    background-color: #fff;
+    background-image: none;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+#wrapper.toggled #sidebar-wrapper {
+    width: 250px;
+}
+
+#page-content-wrapper {
+    width: 100%;
+    position: relative;
+}
+
+#wrapper.toggled #page-content-wrapper {
+    position: absolute;
+    margin-right: -250px;
+}
+
+/* Sidebar Styles */
+.sidebar-nav {
+    position: absolute;
+    top: 0;
+    width: 250px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.sidebar-nav li {
+    text-indent: 20px;
+    line-height: 40px;
+}
+
+.sidebar-nav li a {
+    display: block;
+    text-decoration: none;
+    color: #999999;
+    font-size: 17px;
+}
+
+.sidebar-nav li a:hover {
+    text-decoration: none;
+    color: #fff;
+    background: rgba(255,255,255,0.2);
+    border-left: groove;
+}
+
+.sidebar-nav li a:active,
+.sidebar-nav li a:focus {
+    text-decoration: none;
+}
+
+.sidebar-nav > .sidebar-brand {
+    height: 65px;
+    font-size: 20px;
+    font-weight: bold;
+    line-height: 60px;
+}
+
+.sidebar-nav > .sidebar-brand a {
+    color: #999999;
+}
+
+.sidebar-nav > .sidebar-brand a:hover {
+    color: #fff;
+    background: none;
+    border: none;
+}
+
+.book-form {
+    display: flex;
+}
+
+.book-form > div {
+    flex: 1;
+}
+
+.string1 {
+    font-weight: bold;
+}
+
+@media(min-width:768px) {
+    #wrapper {
+        padding-left: 0;
+    }
+
+    #wrapper.toggled {
+        padding-left: 250px;
+    }
+
+    #sidebar-wrapper {
+        width: 0;
+    }
+
+    #wrapper.toggled #sidebar-wrapper {
+        width: 250px;
+    }
+
+
+    #page-content-wrapper {
+        padding: 0px;
+        position: relative;
+    }
+
+    #wrapper.toggled #page-content-wrapper {
+        position: relative;
+        margin-right: 0;
+    }
+}
