@@ -6,23 +6,21 @@
  * const declaration
  */
 const red = "Password: weak";
-const yellow = "Password: discrete";
+//const yellow = "Password: discrete";
 const green = "Password: strong";
 const err = "Error!";
 
-var server_page = "http://localhost/Model/";
-
 /* part used to store the main object used during the login phase */
-function User(name, surname, password, email) {
+function User(name, email, password) {
     this.name = name;
-    this.surname = surname;
+    this.email = email;
     this.password = password;
-    this.email  = email;
 }
 
 function email(email_add) {
     this.address = email_add;
     this.isValid  = function (){
+        // this is the regexp pattern for the email check
         var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
         return re.test(this.address);
     };
@@ -32,22 +30,19 @@ function password(password) {
     this.password = password;
     this.pass_strenght = function () {
         var length;
-        var regexp = /([=<>()\\\[\].:;,-_"'@#+-]+|[\s\t\r]+|[0-9]+)/g;
+        // regexp pattern to verify if the string contain at least one capital letter
+        var regexp = /[A-Z]/g;
         var regexp_result;
 
         pass_string = String(this.password);
         length = pass_string.length;
         regexp_result = regexp.test(pass_string);
 
-        if (length <= 2) {
-            /* weak password: red */
+        // return 1 if the password is strong, 0 if is weak
+        if(length > 2 && regexp_result) {
             return 1;
-        } else if (regexp_result) {
-            /* strong password: green*/
-            return 3;
         } else {
-            /* discrete password: yellow*/
-            return 2;
+            return 0;
         }
 
     };
@@ -65,6 +60,9 @@ function password(password) {
 
 /* submit the login form */
 function login_submit() {
+
+    var server_page = "./Model/login_check.php";
+    var user_page = "./user_home_page.php";
 
     /* submit the login form */
     if (check_form_field("log-input-box")){
@@ -84,9 +82,11 @@ function login_submit() {
     var post_data = $("#login-form").serialize();
 
     $.ajax({
-        url: server_page + "login_check.php",
+        url: server_page,
         type: "post",
-        data_type: "string",
+        /*crossOrigin: true,
+        header: {'Content-Type':'application/x-www-form-urlencoded'},*/
+        dataType: "text",
         data: post_data,
         success: function (response, status, xhr) {
 
@@ -115,7 +115,7 @@ function login_submit() {
                     $(".error-box").html("Error: The field are empty");
                     break;
                 case "ok":
-                    window.location.href = "http://localhost/Model/user_home_page.php";
+                    window.location.href = user_page;
                     restore_old_value();
                     break;
                 default:
@@ -148,9 +148,13 @@ $("#login-form").keydown(function(e) {
 
 /* submit the registration form */
 function registration_submit() {
+
+    var server_page = "./Model/registration_check.php";
+    var user_page = "./user_home_page.php";
+
     if (check_form_field("reg-input-box")) {
         show_box("#registration-form .error-box");
-        $("#registration-form .error-box").html("Error: the field are empty");
+        $("#registration-form .error-box").html("Error: some fields are empty!");
         return;
     }
 
@@ -174,35 +178,36 @@ function registration_submit() {
     /* send data to the server */
     var post_data = $("#registration-form").serialize();
     $.ajax({
-        url: server_page + "reg_check.php",
+        url: server_page,
         type: "post",
         data: post_data,
-        data_type: "string",
         success: function(response, status, xhr) {
 
-            switch (response){
-                case "err_1":
-                    /* generic database error */
-                    show_box(".error-box");
-                    $("#registration-form .error-box").html("Error: DB returned an error");
-                    break;
-                case "err_2":
-                    /* username already exist*/
-                    show_box(".error-box");
-                    $("#registration-form .error-box").html("Error: the username already exist");
-                    break;
-                case "err_3":
-                    /* the field are empty*/
-                    show_box(".error-box");
-                    $("#registration-form .error-box").html("Error: the field are empty");
-                    break;
-                case "ok":
-                    window.location.href = "http://localhost/Model/user_home_page.php";
-                    restore_old_value();
-                    break;
-                default:
-                    break;
-            }
+                switch (response) {
+                    case "err_1":
+                        /* generic database error */
+                        show_box(".error-box");
+                        $("#registration-form .error-box").html("Error: DB returned an error");
+                        break;
+                    case "err_2":
+                        /* username already exist*/
+                        show_box(".error-box");
+                        $("#registration-form .error-box").html("Error: the username already exist");
+                        break;
+                    case "err_3":
+                        /* the field are empty*/
+                        show_box(".error-box");
+                        $("#registration-form .error-box").html("Error: the field are empty");
+                        break;
+                    case "ok":
+                        window.location.href = user_page;
+                        restore_old_value();
+                        break;
+                    case "redirect":
+                        window.confirm("redirection");
+                    default:
+                        break;
+                }
 
         },
         error: function (xhr, status, err) {

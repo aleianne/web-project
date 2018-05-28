@@ -60,19 +60,13 @@ $("#registration-form input[name=1-pwd]").keyup(function () {
     var pwd_string = $("#strength-str").get(0);
 
     switch (pwd.pass_strenght()) {
-        case 1: {
+        case 0: {
             pwd_string.innerHTML = red;
             pwd_string.style.color = "red";
             break;
         }
 
-        case 2: {
-            pwd_string.innerHTML = yellow;
-            pwd_string.style.color = "goldenrod";
-            break;
-        }
-
-        case 3: {
+        case 1: {
             pwd_string.innerHTML = green;
             pwd_string.style.color = "green";
             break;

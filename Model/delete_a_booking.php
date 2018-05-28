@@ -21,9 +21,6 @@
     /* start the session */
     session_start();
 
-    /* redirect the client to https protocol if not*/
-    https_check();
-
     if (isset($_SESSION)) {
         $user = $_SESSION['user'];
 

@@ -54,7 +54,7 @@ img#arrow2 {
     display: block;
     width: 22px;
     height: 22px;
-    background: url(/Layout/image/icons8-Delete-26.png);
+    background: url(../image/icons8-Delete-26.png);
     float: right;
     z-index: 2;
 }

@@ -10,18 +10,15 @@
     include "http_control.php";
 
     $server_response = [
-      'par_error'=>'err_1',
-      'db_error'=>'err_2',
-      'already_booked'=>'err_3',
-      'time_err'=>'err_4',
-      'session_error'=>"err_5"
+      'db_error'=>'err_1',
+      'forbidden'=>'err_2',
+      'time_err'=>'err_3',
+      'session_error'=>'err_4',
+      'purchased'=>'ok'
     ];
 
     /* start a session */
     session_start();
-
-    /* redirect the client to https protocol if not*/
-    https_check();
 
     if (isset($_SESSION)) {
         $user = $_SESSION['user'];
@@ -36,7 +33,7 @@
 
     set_time_session();
 
-    try {
+   /* try {
         switch ($_SERVER['REQUEST_METHOD']) {
             case 'GET':
                 if (isset($_GET['first']) && isset($_GET['second'])) {
@@ -63,7 +60,7 @@
         }
     } catch(Exception $e) {
         die($server_response['par_error']);
-    }
+    }*/
 
     $mysql_conn = new mysqli(db_host, db_user, db_pwd, db_name);
     if($mysql_conn->connect_errno) {
@@ -71,18 +68,16 @@
     }
 
     try {
-
         $result_array= "";
         if (!$mysql_conn->autocommit(false)) {
             throw new Exception("Impossible to disable the autocommit");
         }
-        $result_code = insert_booking($mysql_conn, $user, $first_choice, $second_choice, $result_array);
+        $result_code = insert_purchase($mysql_conn, $user, $first_choice, $second_choice, $result_array);
         //$result_code = insert_booking($mysql_conn, "a@p.it", 1, 3, $result_array);
         $mysql_conn->close();
 
         if ($result_code == 1) {
-
-            $bookingID = $result_array['bookingID'];
+            /*$bookingID = $result_array['bookingID'];
             if ($result_array['first'] == true && $result_array['second'] == true) {
                 $response_string = "Seats booked, the booking ID is : $bookingID";
             }
@@ -91,15 +86,13 @@
             }
             if ($result_array['first'] == false && $result_array['second'] == true) {
                 $response_string = "The first choice is not available, the booking ID is: $bookingID";
-            }
-            die("$response_string");
-        } else if ($result_code == 2) {
-            die("Is not possible to reserve the exam calls");
+            } */
+            die($server_response['purchased']);
         } else {
-            die($server_response['already_booked']);
+            die($server_response['forbidden']);
         }
 
-
+        $mysql_conn->close();
 
     } catch (Exception $e) {
         $mysql_conn->rollback();

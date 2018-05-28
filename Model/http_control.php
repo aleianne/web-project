@@ -17,7 +17,7 @@ function https_check() {
         $redirect = "https://".$_SERVER["HTTP_HOST"].$_SERVER["REQUEST_URI"];
         header("HTTP/1.1 301 Moved permanently");
         header("Location: ".$redirect);
-        die("");
+        exit;
     }
 };
 

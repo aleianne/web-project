@@ -6,44 +6,35 @@
  * Date: 18/08/2017
  * Time: 11.07
  */
-class registration
+class registration extends user
 {
     private $name;
-    private $surname;
-    private $email;
-    private $pwd;
-    private $hash_pwd;
-    const hash_alg = "sha256";
 
-    public function __construct($name, $surname, $email, $pwd)
-    {
+    public function __construct($name, $email, $pwd){
+        parent::__construct($email, $pwd);
         $this->name = $name;
-        $this->surname = $surname;
-        $this->email = $email;
-        $this->pwd = $pwd;
     }
 
     public function check_cont() {
-        if (empty($this->email) || empty($this->surname) || empty($this->pwd) || empty($this->email)) {
+        if (empty($this->email) || empty($this->pwd) || empty($this->email)) {
             throw new Exception("the field are empty");
         }
 
         $this->name = strip_tags($this->name);
-        $this->surname = strip_tags($this->surname);
-        $this->pwd = strip_tags($this->pwd);
-        $this->email = strip_tags($this->email);
-    }
-
-    public function getUsername(){
-        return $this->email;
+        $this->username = strip_tags($this->username);
+        $this->password = strip_tags($this->password);
     }
 
     public function getName() {
         return $this->name;
     }
 
-    public function getSurname() {
-        return $this->surname;
+    /*public function getUsername(){
+        return $this->email;
+    }
+
+    public function getName() {
+        return $this->name;
     }
 
     public function getHash_pwd() {
@@ -57,7 +48,7 @@ class registration
     public function Hash_pwd($salt) {
         if (!empty($this->pwd) && !empty($salt)){
 
-            /* convert the data passed in string */
+            // convert the data passed in string
             if (!is_string($this->pwd)) {
                 $string_pwd = (string) $this->pwd;
             } else {
@@ -70,13 +61,12 @@ class registration
                 $string_salt = $salt;
             }
 
-            /* concatenate the string and the salt to obtain the hash password */
+            // concatenate the string and the salt to obtain the hashed password
             $subject_string = $string_pwd.$string_salt;
             return $this->hash_pwd = hash(registration::hash_alg, $subject_string);
 
         } else {
             throw new Exception("Password or salt empty", 1);
         }
-    }
-
+    }*/
 }
