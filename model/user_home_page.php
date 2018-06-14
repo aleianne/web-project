@@ -8,13 +8,13 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>Skipass purchase system</title>
+    <title>Exam booking system</title>
 
     <!-- Bootstrap Core CSS -->
-    <link href="./Layout/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/Layout/css/bootstrap.min.css" rel="stylesheet">
 
     <!-- Custom CSS -->
-    <link href="./Layout/css/simple-sidebar.css" rel="stylesheet">
+    <link href="/Layout/css/simple-sidebar.css" rel="stylesheet">
 
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -32,27 +32,27 @@
     <!-- shadow anchor to activate the leanModal -->
     <a href="#login-container" rel="leanModal" style="display: none" id="login-trigger"></a>
 
-    <!-- Gift SkiPass -->
+    <!-- delete booking form -->
     <div id="delete-container" class="popup-container" style="display: none;">
         <header>
             <div id="header-div">
                 <div>
                 </div>
                 <div class="popup-title">
-                    Gift SkiPass
+                    Delete booking
                 </div>
                 <div>
                     <a class="modalclose" href="#"></a>
                 </div>
         </header>
         <section>
-            <form id="gift-form">
+            <form id="delete-form">
                 <div class="error-box"></div>
-                <div id="user-gift-input-box">
-                    <input title="" type="text" name="username" placeholder="username of the gift receiver"><br>
+                <div id="delete-input-box">
+                    <input title="" type="text" name="bookID" placeholder="Reservation number"><br>
                 </div>
-                <div id="gift-action-box">
-                    <div id="gift-button" class="submit-btn" >
+                <div id="delete-action-box">
+                    <div class="submit-btn" id="delete-btn">
                         <a href="#" id="delete" >Delete</a>
                     </div>
                 </div>
@@ -91,23 +91,39 @@
     </div>
     <!-- end login form -->
 
-    <!-- purchase Skipass -->
-    <div id="purchase-container" class="popup-container" style="display: none;">
+    <!-- booking form -->
+    <div id="booking-container" class="popup-container" style="display: none;">
         <header>
             <div id="header-div">
                 <div>
                 </div>
                 <div class="popup-title">
-                    Purchase SkiPass
+                    Reserve your seats
                 </div>
                 <div>
                     <a class="modalclose" href="#"></a>
                 </div>
         </header>
         <section>
-            <form id="purchase-form" class="form-inline">
-                <div id="purchase-button" class="submit-btn">
-                    <a href="#">Purchase!</a>
+            <form id="booking-form" class="form-inline">
+                <div class="form-group" style="display: block; width: 100%; margin-bottom: 10px;">
+                    <label for="first-slc">insert your first choice</label>
+                    <select class="booking-form" name="first" id="first-slc">
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                    </select>
+                </div>
+                <div class="form-group" style="display: block; width: 100%; margin-bottom: 10px;">
+                    <label for="second-slc">insert your second choice</label>
+                    <select class="booking-form" name="second" id="second-slc">
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                    </select>
+                </div>
+                <div id="submit-booking" class="submit-btn">
+                    <a href="#">Book</a>
                 </div>
             </form>
         </section>
@@ -123,13 +139,13 @@
                 </a>
             </li>
             <li>
-                <a href="#" id="logout">Logout<img src="./Layout/image/icons8-Forward-48.png" id="arrow2"></a>
+                <a href="#" id="logout">Logout<img src="/Layout/image/icons8-Forward-48.png" id="arrow2"></a>
             </li>
             <li>
-                <a href="#gift-container" id="gift-skipass" rel="leanModal">Gift SkiPass<img src="./Layout/image/icons8-Forward-48.png" id="arrow2"></a>
+                <a href="#delete-container" id="delete-booking" rel="leanModal">Delete booking<img src="/Layout/image/icons8-Forward-48.png" id="arrow2"></a>
             </li>
             <li>
-                <a href="#purchase-container" id="purchase-skipass" rel="leanModal">Purchase SkiPass<img src="./Layout/image/icons8-Forward-48.png" id="arrow2"></a>
+                <a href="#booking-container" id="make-a-reservation" rel="leanModal">Reserve seats<img src="/Layout/image/icons8-Forward-48.png" id="arrow2"></a>
             </li>
         </ul>
     </div>
@@ -140,7 +156,7 @@
 
         <!-- #toolbar -->
         <div id="titlebar">
-            <div id="first-col"><img src="./Layout/image/icons8-Menu-48.png" id="sidebar-icon"></div>
+            <div id="first-col"><img src="/Layout/image/icons8-Menu-48.png" id="sidebar-icon"></div>
             <div id="second-col">
                 <form class="form-inline" style=" float: right; margin-right: 5px; margin-top: 5px;">
                     <div class="form-group">
@@ -170,13 +186,13 @@
                     <div>
                         <?php
 
-                        include("./model/db_request.php");
+                        include ("db_request.php");
                         define ("tot_num_call", 3);
 
                         /* query the database to*/
                         try {
 
-                            $mysql_conn = new mysqli(db_host,db_user, db_pwd, db_name);
+                            $mysql_conn = new mysqli(db_host,db_user, db_pwd, db_name, db_port );
 
                             if ($mysql_conn->connect_errno) {
                                 throw new Exception("Problem during the db connection");
@@ -232,19 +248,19 @@
 <!-- /#wrapper -->
 
 <!-- jQuery -->
-<script src="logic/jquery.js"></script>
+<script src="/logic/jquery.js"></script>
 
 <!--leanModal library -->
-<script type="text/javascript" src="logic/jquery.leanModal.min.js"></script>
+<script type="text/javascript" src="/logic/jquery.leanModal.min.js"></script>
 
 <!-- Bootstrap Core JavaScript -->
-<script src="logic/bootstrap.min.js"></script>
+<script src="/logic/bootstrap.min.js"></script>
 
-<script src="logic/client_request.js"></script>
+<script src="/logic/booking_request.js"></script>
 
-<script src="logic/login.js"></script>
+<script src="/logic/login.js"></script>
 
-<script src="logic/DOM_controller_user_page.js"></script>
+<script src="/logic/DOM_controller_user_page.js"></script>
 
 <script type="text/javascript">
     var x = navigator.cookieEnabled;

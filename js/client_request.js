@@ -6,7 +6,7 @@ $("#purchase-button").click(function () {
 
     //var first_choice = $("#first-slc option:selected").text();
     //var second_choice = $("#second-slc option:selected").text();
-    var page_url = "./Model/request_of_booking.php";
+    var page_url = "./model/request_of_booking.php";
 
     /*if (first_choice == second_choice) {
         window.confirm("Is not possible to reserve two seats for the same call");
@@ -38,7 +38,7 @@ $("#purchase-button").click(function () {
                 case "ok":
                     window.confirm("the skipass is purchased correctly!");
                     $(".modalclose").trigger("click");
-                    $("#list-div").load("./Model/user_home_page.php #list-div");
+                    $("#list-div").load("./model/user_home_page.php #list-div");
                     break;
                 default:
                     //
@@ -52,7 +52,7 @@ $("#purchase-button").click(function () {
 
 $("#logout").click(function() {
 
-    var php_logout_page_url = "./Model/logout.php";
+    var php_logout_page_url = "./model/logout.php";
     var index_page = "./index.php";
 
     $.ajax({
@@ -72,10 +72,10 @@ $("#logout").click(function() {
 $("#gift-btn").click(function () {
 
     var username = $("#gift-form input[name=username]").get(0).value;
-    var delete_page_url = "./Model/delete_a_booking.php";
+    var delete_page_url = "./model/delete_a_booking.php";
 
    /* if (parseInt(value) !== parseInt(value, 10)) {
-        show_box("#delete-form .error-box");
+        showBox("#delete-form .error-box");
         $("#delete-form .error-box").html("Error: the value insert is not valid");
         return;
     } */
@@ -115,7 +115,7 @@ $("#gift-btn").click(function () {
                     hide_box("#gift-form .error-box");
                     window.confirm("Booking deleted");
                     $(".modalclose").trigger("click");
-                    $("#list-div").load("../Model/user_home_page.php #list-div");
+                    $("#list-div").load("../model/user_home_page.php #list-div");
                     break;
                 default:
                     break;

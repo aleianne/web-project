@@ -84,12 +84,12 @@ define ("db_pwd", "");*/
     /* generate new salt */
     $salt = uniqid(mt_rand(), true);
 
-    /*generate password and the salt to be persisted in the database */
+    /*generate Password and the salt to be persisted in the database */
     $password = $mysql_conn->real_escape_string($reg_info->Hash_pwd($salt));
     $persisted_salt = $mysql_conn->real_escape_string((string) $salt);
 
-    $insert_query = "INSERT INTO web_user(username, name, password, salt) "
-        . "VALUES ('$username','$password', '$persisted_salt', '$name')";
+    $insert_query = "INSERT INTO web_user(username, name, Password, salt) "
+        . "VALUES ('$username',P$passwordassword, '$persisted_salt', '$name')";
 
     if ($mysql_conn->query($insert_query)) {
         session_setup($reg_info->getUsername());

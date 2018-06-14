@@ -33,7 +33,7 @@
     <div id="wrapper">
 
         <!-- login form -->
-        <div id="login-container" class="popupContainer" style="display: none;">
+        <div id="login-container" class="popup-container" style="display: none;">
             <header>
                 <div id="header-div">
                     <div>
@@ -63,7 +63,7 @@
         <!-- end login form -->
 
         <!-- register form -->
-        <div id="registration-container" class="popupContainer" style="display: none;">
+        <div id="registration-container" class="popup-container" style="display: none;">
             <header>
                 <div id="header-div">
                     <div>
@@ -218,19 +218,19 @@
     <!-- /#wrapper -->
 
     <!-- jQuery -->
-    <script type="text/javascript" src="/Logic/jquery.js"></script>
+    <script type="text/javascript" src="/logic/jquery.js"></script>
 
     <!--leanModal library -->
-    <script type="text/javascript" src="/Logic/jquery.leanModal.min.js"></script>
+    <script type="text/javascript" src="/logic/jquery.leanModal.min.js"></script>
 
     <!-- Bootstrap Core JavaScript -->
-    <script src="/Logic/bootstrap.min.js"></script>
+    <script src="/logic/bootstrap.min.js"></script>
 
     <!-- DOM object controller -->
-    <script type="text/javascript" src="/Logic/DOM_controller.js"></script>
+    <script type="text/javascript" src="/logic/DOM_controller.js"></script>
 
     <!--login js  -->
-    <script type="text/javascript" src="/Logic/login.js"></script>
+    <script type="text/javascript" src="/logic/login.js"></script>
 
     <script type="text/javascript">
         var x = navigator.cookieEnabled;
