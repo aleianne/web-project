@@ -53,7 +53,7 @@
                 <div id="login-error-box" class="error-box"></div>
                 <div id="login-input-box">
                     <input title="" type="text" name="email" placeholder="Email address"><br>
-                    <input title="" type="text" name="password" placeholder="Password"><br>
+                    <input title="" type="password" name="password" placeholder="Password"><br>
                 </div>
                 <div class="action-box">
                     <div id="login-btn" class="submit-btn">
@@ -88,8 +88,8 @@
                     <!--<input title="form-label" type="text" name="surname" placeholder="Surname"><br>-->
                     <input title="" type="text" name="email" placeholder="Email address"><br>
                     <input title="" type="password" name="first-password" placeholder="Password"><br>
-                    <div id="pwd-strength" style="display: none;">
-                        <p id="strength-str"></p>
+                    <div id="password-strength-box" style="display: none;">
+                        <p id="strength-string"></p>
                     </div>
                     <input title="" type="password" name="second-password" placeholder="Repeat password"><br>
                 </div>
@@ -307,21 +307,21 @@
             console.log("pasted");
         });
 
-        /* change the type of the input */
-        loginFormElement.find("input[name='password']").focus(function () {
-            this.setAttribute("type", "Password");
-            this.value = "";
-        });
-
-        registrationFormElement.find("input[name='first-password']").focus(function () {
-            this.setAttribute("type", "Password");
-            this.value = "";
-        });
-
-        registrationFormElement.find("input[name='second-password']").focus(function () {
-            this.setAttribute("type", "Password");
-            this.value = "";
-        });
+//        /* change the type of the input */
+//        loginFormElement.find("input[name='password']").focus(function () {
+//            this.setAttribute("type", "Password");
+//            this.value = "";
+//        });
+//
+//        registrationFormElement.find("input[name='first-password']").focus(function () {
+//            this.setAttribute("type", "Password");
+//            this.value = "";
+//        });
+//
+//        registrationFormElement.find("input[name='second-password']").focus(function () {
+//            this.setAttribute("type", "Password");
+//            this.value = "";
+//        });
 
 
         /* button for toggling the sidebar*/

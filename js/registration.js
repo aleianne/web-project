@@ -101,20 +101,20 @@ function registrationSubmit() {
 
 function passwordRealTimeCheck() {
         var pwd = new Password($("#registration-form").find("input[name='first-password']").get(0).value);
-        var pwdElement = $("#strength-str")
-        var pwdString = pwdElement.get(0);
+        var passwordElement = $("#password-strength-box");
+        var passwordString = $("#strength-string").get(0);
 
         if (pwd.pwdStrength()) {
-            pwdString.innerHTML = green;
-            pwdString.style.color = "green";
+            passwordString.innerHTML = green;
+            passwordString.style.color = "green";
         } else {
-            pwdString.innerHTML = red;
-            pwdString.style.color = "red";
+            passwordString.innerHTML = red;
+            passwordString.style.color = "red";
         }
 
 
-        if (!pwdElement.is(":visible"))
-            pwdElement.show();
+        if (!passwordElement.is(":visible"))
+            passwordElement.show();
 }
 
 function errorFunction(xhr, status, err) {

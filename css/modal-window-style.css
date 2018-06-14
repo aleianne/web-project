@@ -121,7 +121,7 @@ div.list-div {
     background-color: #5bc0de;
 }
 
-#pwd-strength {
+#password-strength-box {
     display: none;
     padding: 3px 5px;
     margin: auto;
