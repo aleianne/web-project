@@ -9,19 +9,21 @@
 
     // define the max number of seats into the minibus
     define ("max_seats", 4);
+    define("first_address", "a");
+    define("last_address", "z");
 
     class Booking {
         private $connection;
         private $begin_address;
         private $end_address;
-        private $route_id;
+        private $address_id_array;
 
 
         public function __construct($connection, $begin_address, $end_address) {
             $this->connection = $connection;
             $this->begin_address = $begin_address;
             $this->end_address = $end_address;
-            $this->route_id  = [];
+            $this->address_id_array = new ArrayIterator();
         }
 
         private function searchIntermediateRoutes($seats_number) {
@@ -60,6 +62,43 @@
 
             } else
                 throw new Exception("impossible to execute the query into the database");
+
+        }
+
+        private function queryAddress() {
+             $query_1 = "SELECT route.address_id, address.address_name, address.departing_seats, adddress.arrival_seats FROM address ".
+                          "WHERE LOWER(address.address_name) <= '$this->begin_address' AND LOWER(address.address_name) >= '$this->end_address' FOR UPDATE'";
+
+             if ($query_result = $this->connection->query($query_1)) {
+
+                if ($query_result->num_rows  == 0 ){
+
+                } else  if ($query_result->num_rows() == 1) {
+
+
+                } else {
+                    while($row = $query_result->fetch_array())
+                        $this->address_id_array->append($row["address_id"]);
+
+                }
+
+             } else
+                 throw new DatabaseExpcetion();
+        }
+
+        private function updateAddress() {
+
+            if ($this->address_id_array->count() == 0 ) {
+
+            }
+
+            if ($this->address_id_array->count() == 1) {
+
+            }
+
+            if ($this->address_id_array->count() == 2) {
+            }
+
 
         }
 
