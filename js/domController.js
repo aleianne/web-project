@@ -41,12 +41,12 @@ $(".modalclose").click( function () {
 });
 
 
-function showBox(box_name) {
-    if (!$(box_name).is(":visible"))
-        $(box_name).show();
+function showBox(boxElement) {
+    if (!boxElement.is(":visible"))
+        boxElement.show();
 }
 
-function hideBox(box_name) {
-    if (!$(box_name).is(":hidden"))
-        $(box_name).hide();
+function hideBox(boxElement) {
+    if (!boxElement.is(":hidden"))
+        boxElement.hide();
 }

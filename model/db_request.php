@@ -7,6 +7,130 @@
     define ("db_name", "s239846");
     define ("db_pwd", "lemlogys");
 
+    // define the max number of seats into the minibus
+    define ("max_seats", 4);
+
+    class Booking {
+        private $connection;
+        private $begin_address;
+        private $end_address;
+        private $route_id;
+
+
+        public function __construct($connection, $begin_address, $end_address) {
+            $this->connection = $connection;
+            $this->begin_address = $begin_address;
+            $this->end_address = $end_address;
+            $this->route_id  = [];
+        }
+
+        private function searchIntermediateRoutes($seats_number) {
+
+            $query_1 = "SELECT address.route_id, address.begin_address, address.end_address, address.booked_seats FROM address " .
+                "WHERE ('$this->begin_address' >= LOWER(departure_seats && '$this->begin_address' <= LOWER(begin_address))) || " .
+                "('$this->end_address' <= LOWER(end_address)) || ".
+                "('$this->end_address' <= LOWER(begin_address) && '$this->end_address' >= LOWER(end_address) FOR UPDATE";
+
+            if ($query_result = $this->connection->query($query_1)) {
+
+                if ($query_result->num_rows() > 0) {
+
+                    // if the result is greater than 0 check if the sets are available
+                    while ($row = $query_result->fetch_array()) {
+                        $booked_seats = $row["booked_seats"];
+                        $begin_address = $row["begin_address"];
+                        $end_address = $row["end_address"];
+
+                        // add the id to the the array fo ids
+                        $this->route_id->push($row["route_id"]);
+
+                        if ($booked_seats + $seats_number > max_seats) {
+                            // clear the route array
+                            unset($this->route_id);
+
+                            throw new SeatsNotAvailableExcpetions("the seats are not available for the route from "
+                                . $begin_address . " to " . $end_address);
+                        }
+
+                        return true;
+                    }
+
+                } else
+                    return false;
+
+            } else
+                throw new Exception("impossible to execute the query into the database");
+
+        }
+
+        private function searchRouteExistence($seats_number) {
+            // search if exist someo  other route with the same and and begin address
+
+            $query_1= "SELECT address.begin_address, address.end_address, address.booked_seats FROM address " .
+                "WHERE begin_addrress = '$this->begin_address' && end_address = '$this->end_address' FOR UPDATE";
+
+            if ($query_result = $this->connection->query($query_1)) {
+
+                if ($query_result->num_rows() < 0)
+                    return false;
+
+                $booked_seats = $query_result->fetch_array()["booked_seats"];
+                $begin_address = $query_result->fetch_array()["begin_address"];
+                $end_address = $query_result->fetch_array()["end_address"];
+
+                $this->route_id->push($query_result->fetch_array()["route_id"]);
+
+                if ($booked_seats + $seats_number > max_seats) {
+                    unset($this->route_id);
+                    throw new SeatsNotAvailableExcpetions("the seats are not available for the route from "
+                        . $begin_address . " to " . $end_address);
+                }
+
+                return true;
+
+            } else {
+                throw new Exception("Impossible to execute a query into the database");
+            }
+
+        }
+
+        private function updateSingleRoute($seats_number) {
+
+            if (empty($this->route_id) || $this->route_id[0] == null )
+                throw new Exception();
+
+            $id = $this->route_id[0];
+
+            $query_1 = "UPDATE route VALUES(route.booked_seats = route.booked_seats + '$seats_number') WHERE route.route_id = '$id'";
+
+            if ($this->connection->query($query_1)) {
+
+            } else {
+                throw new Exception("impossible to execute the query");
+            }
+        }
+
+        private function createRoute() {
+
+        }
+
+        public function bookRoute( $seats_number ) {
+
+            if (searchRoutesExistence($seats_number)) {
+                creatBooking();
+                return ;
+            }
+
+            if (searchIntermediateRoutes($seats_number)) {
+                return;
+            }
+
+        }
+
+
+
+    }
+
     function request_list($conn, $callID) {
         $result_array = [];
         $query_string = $conn->real_escape_string($callID);
@@ -27,39 +151,51 @@
         }
     }
 
-    function insert_purchase($conn, $user) {
 
-        $user_string = $conn->real_escape_string($user);
 
-        $select_query = "SELECT web_user.total_purchased_skipass,  web_user.total_received_skipass FROM web_user WHERE web_user = '$user_string' FOR UPDATE";
-        $update_query = "UPDATE  web_user SET web_user.total_purchased_skipass = web_user.total_purchased_skipass + 1 WHERE web_user = '$user_string'";
+    function updateRoutes($begin_address, $end_address, $conn) {
 
-        /*
-         * purchase one skipass
-         */
-        if ($query_result = $conn->query($select_query)) {
-
-            // retrieve the data from the query
-            $purchased_skipass = $query_result->fetch_array()['total_purchased_skipass'];
-            $received_skipass = $query_result->fetch_array()['total_received_skipass'];
-
-            if ($purchased_skipass + $received_skipass > 10) {
-                // if the skipass associated to the user are more than 10 return an error
-                $conn->commit();
-                return 0;
-            } else {
-                if ($query_result = $conn->query($update_query)) {
-                    $conn->commit();
-                    return 1;
-                } else {
-                    throw new Exception("Database error");
-                }
-            }
-
-        } else {
-            throw new Exception("Database error");
-        }
     }
+
+    function insert_purchase($conn, $begin_address,$end_address) {
+
+    // strip the value received by the server
+    $stripped_begin_address = $conn->real_escape_string($begin_address);
+    $stripped_end_address = $conn->real_escape_string($end_address);
+
+    // begin a new transaction
+    $conn->begin_transaction();
+
+
+    $select_query = "SELECT web_user.total_purchased_skipass,  web_user.total_received_skipass FROM web_user WHERE web_user = '$user_string' FOR UPDATE";
+    $update_query = "UPDATE  web_user SET web_user.total_purchased_skipass = web_user.total_purchased_skipass + 1 WHERE web_user = '$user_string'";
+
+    /*
+     * purchase one skipass
+     */
+    if ($query_result = $conn->query($select_query)) {
+
+        // retrieve the data from the query
+        $purchased_skipass = $query_result->fetch_array()['total_purchased_skipass'];
+        $received_skipass = $query_result->fetch_array()['total_received_skipass'];
+
+        if ($purchased_skipass + $received_skipass > 10) {
+            // if the skipass associated to the user are more than 10 return an error
+            $conn->commit();
+            return 0;
+        } else {
+            if ($query_result = $conn->query($update_query)) {
+                $conn->commit();
+                return 1;
+            } else {
+                throw new Exception("Database error");
+            }
+        }
+
+    } else {
+        throw new Exception("Database error");
+    }
+}
 
     function insert_new_user(){
 

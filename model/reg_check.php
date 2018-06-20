@@ -83,7 +83,7 @@
         $name = $mysql_conn->real_escape_string($reg_info->getName());
         $surname = $mysql_conn->real_escape_string($reg_info->getSurname());
         $username = $mysql_conn->real_escape_string($reg_info->getUsername());
-        $password = $mysql_conn->real_escape_string($reg_info->Hash_pwd($salt));
+        $password = $mysql_conn->real_escape_string($reg_info->hashPassword($salt));
         $persisted_salt = $mysql_conn->real_escape_string((string) $salt);
 
         $insert_query = "INSERT INTO sito_web.web_user(username, Password, salt, name, surname) "

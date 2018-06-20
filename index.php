@@ -30,6 +30,15 @@
     <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
     <![endif]-->
 
+    <!-- jQuery -->
+    <script type="text/javascript" src="./logic/jquery.js"></script>
+
+    <!-- Bootstrap Core JavaScript -->
+    <script src="logic/bootstrap.min.js"></script>
+
+    <!--leanModal library -->
+    <script type="text/javascript" src="./logic/jquery.leanModal.min.js"></script>
+
 </head>
 
 <body>
@@ -253,15 +262,6 @@
 <!--        integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"-->
 <!--        crossorigin="anonymous"></script>-->
 
-<!-- jQuery -->
-<script type="text/javascript" src="./logic/jquery.js"></script>
-
-<!-- Bootstrap Core JavaScript -->
-<script src="logic/bootstrap.min.js"></script>
-
-<!--leanModal library -->
-<script type="text/javascript" src="./logic/jquery.leanModal.min.js"></script>
-
 <!-- DOM object controller -->
 <script type="text/javascript" src="./js/domController.js"></script>
 
@@ -306,6 +306,13 @@
         loginFormElement.find("input[name='email']").on("paste", function(e) {
             console.log("pasted");
         });
+
+//        loginFormElement.find("input[name='email']").focus(function() {
+//            var element = $(this);
+//
+//            if(element.hasClass("error-input-style"))
+//                element.removeClass("error-input-style");
+//        });
 
 //        /* change the type of the input */
 //        loginFormElement.find("input[name='password']").focus(function () {

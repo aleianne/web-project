@@ -42,16 +42,16 @@ define ("db_pwd", "");*/
     try {
         switch ($_SERVER["REQUEST_METHOD"]) {
             case "GET":
-                if (isset($_GET["email"]) && isset($_GET["pwd"])) {
-                    $login_info = new login($_GET["email"], $_GET["pwd"]);
+                if (isset($_GET["email"]) && isset($_GET["password"])) {
+                    $login_info = new login($_GET["email"], $_GET["password"]);
                 }
                 else
                     throw new Exception("Parameter are not complete", 1);
                 break;
 
             case "POST":
-                if (isset($_POST["email"]) && isset($_POST["pwd"]))
-                    $login_info = new login($_POST["email"], $_POST["pwd"]);
+                if (isset($_POST["email"]) && isset($_POST["password"]))
+                    $login_info = new login($_POST["email"], $_POST["password"]);
                 else
                     throw new Exception("Parameter are not complete", 1);
                 break;
@@ -59,10 +59,12 @@ define ("db_pwd", "");*/
             default:
                 break;
         }
-        $login_info->check_login();
+        $login_info->checkLoginDataValidity();
     } catch (Exception $e) {
         die($server_response['param_err']);
     }
+
+
     try {
         /* check the user info inside the DB */
         $mysql_conn = new mysqli(db_host, db_user, db_pwd, db_name);
@@ -74,7 +76,7 @@ define ("db_pwd", "");*/
 
         /* create the sql query string */
         $escaped_string = $mysql_conn->real_escape_string($login_info->getUsername());
-        $query_string = "SELECT web_user.Password, web_user.salt FROM web_user WHERE username = '$escaped_string'";
+        $query_string = "SELECT user.password, user.salt FROM user WHERE username = '$escaped_string'";
 
         if ($query_result = $mysql_conn->query($query_string)) {
 
@@ -90,17 +92,15 @@ define ("db_pwd", "");*/
                 $response = $server_response['login_err'];
             } else {
                 // the generation of the hash can throw an Exception
-                if ($result_array["Password"] == $login_info->hash_pwd($result_array["salt"])) {
+                if ($login_info->checkLoginPassword($result_array["salt"], $result_array["password"])) {
                     session_setup($login_info->getUsername());
                     $response = $server_response['ok_login'];
-                } else {
+                } else
                     $response = $server_response['pwd_err'];
-                }
             }
 
-        } else {
+        } else
             $response = $server_response['db_err'];
-        }
 
         // close the script and return the parameter to the client
         $mysql_conn->close();

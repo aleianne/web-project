@@ -32,7 +32,6 @@ function Password(password) {
 }
 
 Password.prototype.pwdStrength = function () {
-
     // pass_string = String(this.password);
     if (this.password.length < 2)
         return false;
@@ -62,7 +61,7 @@ Password.prototype.eq =  function (pwd) {
         return false;
     }
 
-    if (this.password != pwd)
+    if (this.password != pwd.password)
         return false;
 
     return true;
@@ -71,28 +70,54 @@ Password.prototype.eq =  function (pwd) {
 /* submit the login form */
 function loginSubmit() {
 
-    var loginCheckPageUrl = "./model/login_check.php";
-    var nextPageUrl = "./user_home_page.php";
+    const loginCheckPageUrl = "./model/login_check.php";
+    const nextPageUrl = "./user_home_page.php";
+    const errorClassName = "error-effect";
 
-    var userEmail = new Email($("#login-form").find("input[name='email']").get(0).value);
-    var userPwd = new Password($("#login-form").find("input[name='password']").get(0).value);
+    var loginFormElement = $("#login-form");
+    var loginFormErrorBox = loginFormElement.find(".error-box");
+    var emailInputElement = loginFormElement.find("input[name='email']");
+    var passwordInputElement = loginFormElement.find("input[name='password']");
 
-    var loginUser = new User(userEmail, userPwd);
+    var loginUser = new User(new Email(emailInputElement.val()), new Password(passwordInputElement.val()));
 
     if (loginUser.email.isEmpty() || loginUser.password.isEmpty()){
         // show the error box
-        showBox("#login-form .error-box");
-        $("#login-form").find(".error-box").html("Error: the field are empty");
+        showBox(loginFormErrorBox);
+        loginFormErrorBox.html("Error: field are empty");
+
+        // add an aminamtion to the input box
+        if (loginUser.email.isEmpty() &&  loginUser.password.isEmpty()) {
+            emailInputElement.addClass(errorClassName);
+            passwordInputElement.addClass(errorClassName);
+            setTimeout(function() {
+                emailInputElement.removeClass(errorClassName);
+                passwordInputElement.removeClass(errorClassName)
+            }, 300);
+        }
+
+        if(loginUser.email.isEmpty()) {
+            emailInputElement.addClass(errorClassName);
+            setTimeout(function() {
+                emailInputElement.removeClass(errorClassName);
+            }, 300);
+        } else {
+            passwordInputElement.addClass(errorClassName);
+            setTimeout(function () {
+                passwordInputElement.removeClass(errorClassName);
+            }, 300);
+        }
+
         return;
     }
 
     if (!loginUser.email.isValid()) {
-        showBox("#login-form .error-box");
-        $("#login-form").find(".error-box").html("Error: the Email address is not valid");
+        showBox(loginFormErrorBox);
+        loginFormErrorBox.html("Error: email address is not valid");
         return;
     }
 
-    var post_data = $("#login-form").serialize();
+    var post_data = loginFormElement.serialize();
 
     $.ajax({
         url: loginCheckPageUrl,
@@ -105,27 +130,27 @@ function loginSubmit() {
 
             switch (response){
                 case "err_1":
-                    showBox("#login-form .error-box");
-                    $(".error-box").html("Error: username doesn't exist");
+                    showBox(loginFormErrorBox);
+                    loginFormErrorBox.html("Error: username doesn't exist");
                     break;
                 case "err_2":
                     /* database connection error */
-                    showBox("#login-form.error-box");
-                    $(".error-box").html("Error: Database connection error");
+                    showBox(loginFormErrorBox);
+                    loginFormErrorBox.html("Error: Database connection error");
                     break;
                 case "err_3":
-                    showBox("#login-form .error-box");
-                    $(".error-box").html("Error: the Password is no correct");
+                    showBox(loginFormErrorBox);
+                    loginFormErrorBox.html("Error: the Password is no correct");
                     break;
                 case "err_4":
                     /* generic database error */
-                    showBox("#login-form .error-box");
-                    $(".error-box").html("Error:  DB returned an error");
+                    showBox(loginFormErrorBox);
+                    loginFormErrorBox.html("Error:  DB returned an error");
                     break;
                 case "err_5":
                     /*field are empty */
-                    showBox("#login-form .error-box");
-                    $(".error-box").html("Error: The field are empty");
+                    showBox(loginFormErrorBox);
+                    loginFormErrorBox.html("Error: The field are empty");
                     break;
                 case "ok":
                     window.location.href = nextPageUrl;
@@ -137,14 +162,13 @@ function loginSubmit() {
 
         },
         error: function (xhr, status, err) {
-            showBox("#login-form .error-box");
+            showBox(errorBoxElement);
             var err_string;
 
-            if (typeof(err) != undefined) {
+            if (typeof(err) != undefined)
                 err_string = status + " " + err;
-            }
-            $("#login-form .error-box").html("Error: " + err_string );
-            return;
+
+            loginFormElement.find(".error-box").html("Error: " + err_string );
         }
     });
 }

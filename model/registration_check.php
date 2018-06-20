@@ -37,16 +37,16 @@ define ("db_pwd", "");*/
     try {
         switch ($_SERVER["REQUEST_METHOD"]) {
             case "GET":
-                if (isset($_GET["name"]) && isset($_GET["email"]) && isset($_GET["1-pwd"]))
-                    $reg_info = new registration($_GET["name"], $_GET["surname"], $_GET["email"], $_GET["1-pwd"]);
+                if (isset($_GET["email"]) && isset($_GET["first-password"]))
+                    $reg_info = new registration( $_GET["email"], $_GET["first-password"]);
                 else {
                     throw new Exception("parameters passed are not valid", 1);
                 }
                 break;
 
             case "POST":
-                if (isset($_POST["name"]) && isset($_POST["email"]) && isset($_POST["1-pwd"]))
-                    $reg_info = new registration($_POST["name"], $_POST["surname"], $_POST["email"], $_POST["1-pwd"]);
+                if (isset($_POST["name"]) && isset($_POST["email"]) && isset($_POST["first-password"]))
+                    $reg_info = new registration($_POST["email"], $_POST["first-password"]);
                 else {
                     throw new Exception("the parameters passed are not valid", 1);
                 }
@@ -85,7 +85,7 @@ define ("db_pwd", "");*/
     $salt = uniqid(mt_rand(), true);
 
     /*generate Password and the salt to be persisted in the database */
-    $password = $mysql_conn->real_escape_string($reg_info->Hash_pwd($salt));
+    $password = $mysql_conn->real_escape_string($reg_info->hashPassword($salt));
     $persisted_salt = $mysql_conn->real_escape_string((string) $salt);
 
     $insert_query = "INSERT INTO web_user(username, name, Password, salt) "
@@ -100,8 +100,5 @@ define ("db_pwd", "");*/
 
     $mysql_conn->close();
     die($response);
-
-
-
 
 

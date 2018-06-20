@@ -6,21 +6,16 @@
  * Date: 18/08/2017
  * Time: 11.07
  */
-class registration extends user
-{
-    private $name;
+class registration extends user{
 
     public function __construct($name, $email, $pwd){
         parent::__construct($email, $pwd);
-        $this->name = $name;
     }
 
-    public function check_cont() {
-        if (empty($this->email) || empty($this->pwd) || empty($this->email)) {
+    public function checkRegistrationData() {
+        if (empty($this->username) || empty($this->password))
             throw new Exception("the field are empty");
-        }
 
-        $this->name = strip_tags($this->name);
         $this->username = strip_tags($this->username);
         $this->password = strip_tags($this->password);
     }

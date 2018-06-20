@@ -28,10 +28,10 @@ Registration.prototype.checkRegistrationValidity = function() {
 
 Registration.prototype.checkPasswordValidity = function() {
     // check if the password are valid
-    if (this.user.password.isValid() && this.secondPassword.isValid())
+    if (this.user.password.pwdStrength())
         return true;
 
-    console.log("the password are not valid");
+    console.log("the password is not valid");
     return false;
 }
 
@@ -54,15 +54,14 @@ function registrationSubmit() {
     // }
 
     var registrationForm = $("#registration-form");
-
-    var userEmail = new Email(registrationForm.find("input[name='email']").get(0).value);
-    var pwd1 = new Password(registrationForm.find("input[name='first-password']").get(0).value);
+    var userMailElement = registrationForm.find("input[name='email']");
+    var password1Element = registrationForm.find("input[name='first-password']");
+    var password2Element = registrationForm.find("input[name='second-password']");
 
     // create a new user object
-    var user = new User(userEmail, pwd1);
+    var user = new User(new Email(userMailElement.val()), new Password(password1Element.val()));
 
-    var pwd2 = new Password(registrationForm.find("input[name='second-password']").get(0).value);
-    var registrationUser = new Registration(user, pwd2);
+    var registrationUser = new Registration(user, new Password(password2Element.val()));
 
     if (!registrationUser.checkRegistrationValidity()) {
         showBox("#registration-form .error-box");

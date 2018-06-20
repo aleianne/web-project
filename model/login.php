@@ -8,11 +8,13 @@
  */
 class login extends user
 {
+    const hash_alg = "sha256";
+
     public function __construct($username, $password){
         parent::__construct($username, $password);
     }
 
-    public function check_login() {
+    public function checkLoginDataValidity() {
         if (empty($this->password)  || empty($this->username)) {
             throw new Exception("the password or the username are empty");
         }
@@ -21,33 +23,41 @@ class login extends user
         $this->username = strip_tags($this->username);
     }
 
-    /*public function getUser(){
-        return $this->username;
-    }
+//    public function getUser(){
+//        return $this->username;
+//    }
 
-    public function hash_pwd($salt) {
+    // this method hash a password given a salt
+    public function hashPassword($salt) {
 
-        if (!empty($this->passwd) && !empty($salt)){
-
+        if (!empty($this->password) && !empty($salt)){
+            $string_pwd = "";
             //convert the data passed in string
-            if (!is_string($this->passwd)) {
-                $string_pwd = (string) $this->passwd;
-            } else {
-                $string_pwd = $this->passwd;
-            }
+            if (!is_string($this->password))
+                $string_pwd = (string) $this->password;
+             else
+                $string_pwd = $this->password;
 
-            if(!is_string($salt)) {
+
+            if(!is_string($salt))
                 $string_salt = (string) $salt;
-            } else {
+             else
                 $string_salt = $salt;
-            }
 
             // concatenate the string and the salt to obtain the hash password
             $subject_string = $string_pwd.$string_salt;
             return $hash_passwd = hash(login::hash_alg, $subject_string);
 
-        } else {
+        } else
             throw new Exception("Password or salt empty", 1);
-        }
-    }*/
+    }
+
+    public function checkLoginPassword($salt, $dbPassword) {
+        $hashedPassword = $this->hashPassword($salt);
+
+        if (strcmp($hashedPassword, $dbPassword) == 0)
+            return true;
+        else
+            return false;
+    }
 }
