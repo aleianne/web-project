@@ -36,23 +36,33 @@
    try {
         switch ($_SERVER['REQUEST_METHOD']) {
             case 'GET':
-                if (isset($_GET['dep-address']) && isset($_GET['arr-address'])) {
+                if (isset($_GET['dep-address']) && isset($_GET['arr-address'])
+                    && isset($_GET["dep_exists"]) && isset($_GET["arr_exists"])
+                    && isset($_GET["seats_number"])) {
                     $departure = $_GET['dep-address'];
                     $arrival = $_GET['arr-address'];
+                    $departure_exists = $_GET["dep_exists"];
+                    $arrival_exists = $_GET["arr_exists"];
+                    $seats_number = $_GET["seats_number"];
                 }
-                else {
+                else
                     throw new Exception("parameters passed are not valid", 1);
-                }
+
                 break;
 
             case 'POST':
-                if (isset($_POST['dep-address']) && isset($_POST['arr-address'])) {
+                if (isset($_POST['dep-address']) && isset($_POST['arr-address'])
+                    && isset($_POST["dep_exists"]) && isset($_POST["arr_exists"])
+                    && isset($_POST["seats_number"])) {
                     $departure = $_POST['dep-address'];
                     $arrival = $_POST['arr-address'];
+                    $departure_exists = $_POST["dep_exists"];
+                    $arrival_exists = $_POST["arr_exists"];
+                    $seats_number  = $_POST["seats_number"];
                 }
-                else {
+                else
                     throw new Exception("the parameters passed are not valid", 1);
-                }
+
                 break;
 
             default:
@@ -63,39 +73,34 @@
     }
 
     $mysql_conn = new mysqli(db_host, db_user, db_pwd, db_name);
-    if($mysql_conn->connect_errno) {
+
+    if($mysql_conn->connect_errno)
         die($server_response['db_error']);
-    }
+
 
     try {
 
-        $result_array= "";
         if (!$mysql_conn->autocommit(false))
             throw new Exception("Impossible to disable the autocommit");
-
-        $result_code = insert_purchase($mysql_conn, $user, $first_choice, $second_choice, $result_array);
-        //$result_code = insert_booking($mysql_conn, "a@p.it", 1, 3, $result_array);
-        $mysql_conn->close();
 
         // strip all the parameter passed by the client and make lower case
         $stripped_departure  = strtolower($conn->real_escape_string($departure));
         $stripped_arrival = strtolower($conn->real_escape_string($arrival));
 
-        if ($result_code == 1) {
-            /*$bookingID = $result_array['bookingID'];
-            if ($result_array['first'] == true && $result_array['second'] == true) {
-                $response_string = "Seats booked, the booking ID is : $bookingID";
-            }
-            if ($result_array['first'] == true && $result_array['second'] == false){
-                $response_string = "Only the first choice is booked, the booking ID is: $bookingID";
-            }
-            if ($result_array['first'] == false && $result_array['second'] == true) {
-                $response_string = "The first choice is not available, the booking ID is: $bookingID";
-            } */
-            die($server_response['purchased']);
-        } else {
-            die($server_response['forbidden']);
+        $booking = new Booking($mysql_conn, $stripped_departure, $stripped_arrival);
+
+        if ($departure_exists && $arrival_exists) {
+            $mysql_conn->start_transaction();
+            $booking->addressAlreadyExists($seats_number);
+            $mysql_conn->commit();
+        } else if ($departure_exists && !$arrival_exists) {
+            $booking->departureAddressExists($seats_number);
+        } else if (!$departure_exists && $arrival_exists) {
+            $booking->arrivalAddressExists($seats_number);
+        } else if (!$departure_exists && !$arrival_exists) {
+            $booking->addressNotExists($seats_number);
         }
+
 
         $mysql_conn->close();
 
@@ -103,6 +108,10 @@
         $mysql_conn->rollback();
         $mysql_conn->close();
         die($server_response['db_error']);
+    } catch (DatabaseExpcetion $dbe) {
+        $mysql_conn->rollback();
+        $mysql_conn->close();
+        die($server_response["db_error"]);
     }
 
 
