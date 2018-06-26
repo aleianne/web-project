@@ -14,6 +14,7 @@ class Booking
     private $departure_address;
     private $arrival_address;
     private $route_id_array;
+    private $user_id;
 
     public function __construct($connection, $departure_address, $arrival_address){
         $this->connection = $connection;
@@ -93,9 +94,9 @@ class Booking
     public function addressAlreadyExists($seats_number) {
         $route_dao = new RouteDAO($this->connection);
 
-        $result = $route_dao->readRoute();
+        $result = $route_dao->queryRoute($this->departure_address, $this->arrival_address);
 
-        // iterate all over the seats booked in the correpondent route
+        // iterate all over the seats booked in the correspondent route
         $i = $result->getIterator();
         $booked_seats = 0;
 
@@ -107,9 +108,8 @@ class Booking
             $i->next();
         }
 
-
         // update the route table
-        $result = $route_dao->updateRoute($seats_number);
+        $result = $route_dao->updateRoute($this->departure_address, $this->arrival_address, $seats_number);
 
         if ($result->count() == 0)
             throw new Exception("impossible to update the route table ");
@@ -117,7 +117,21 @@ class Booking
 
         //TODO update the user_has_booking table
 
+        // create a new booking row
+        $booking_dao = new BookingDAO($this->connection);
+        $booking_has_route = new BookingHasRouteDAO($this->connection);
 
+        $this->getUserId();
+        $booking_id = $booking_dao->createBooking($this->user_id);
+
+        // iterate over all the route id in order to insert a new record into the
+        $i = $result->getIterator();
+        while($i->valid()) {
+            $booking_has_route->createBookingHasRoute($booking_id, $i->current());
+            $i->next();
+        }
+
+        return $booking_id;
     }
 
     /*
@@ -126,7 +140,7 @@ class Booking
     public function departureAddressExists($seats_number) {
        $route_dao = new RouteDAO($this->connection);
 
-       $result = $route_dao->readRoute();
+       $result = $route_dao->queryRoute($this->departure_address, $this->arrival_address);
 
        $i = $result->getIterator();
        $booked_seats = 0;
@@ -138,7 +152,41 @@ class Booking
            $i->next();
        }
 
+       $result = $route_dao->updateRoute($this->departure_address, $this->arrival_address, $seats_number);
 
+       // TODO insert a new route into the table
+
+       if (result.count() == 0) {
+           throw new Exception();
+       }
+
+       // select the route to be updated and retourne the route objecr
+        $route_object = $route_dao->readRoute2($this->arrival_address);
+
+
+       //update the route row with a new arrival for the end of the route
+       $route_dao->updateRoute2($this->arrival_address);
+
+       // create a new route record into the table and than add it to the array
+       $route_id = $route_dao->createRoute($this->arrival_address, $route_object->getArrivalAddress(), $route_object->getBookedSeats() + $seats_number);
+       $result.append($route_id);
+
+       //create a new travel booking
+       $booking_table = new BookingDAO($this->connection);
+       $booking_has_route = new BookingHasRouteDAO($this->connection);
+
+       $this->getUserId();
+       $booking_id = $booking_table->createBooking($this->user_id);
+
+
+        // iterate over all the route id in order to insert a new record into the
+        $i = $result->getIterator();
+        while($i->valid()) {
+            $booking_has_route->createBookingHasRoute($booking_id, $i->current());
+            $i->next();
+        }
+
+        return $booking_id;
     }
 
     /*
@@ -158,6 +206,38 @@ class Booking
                 throw new SeatsNotAvailableExcpetions("seats not available for the journey");
             $i->next();
         }
+
+        $result = $route_dao->updateRoute($this->departure_address, $this->arrival_address, $seats_number);
+
+        if ($result->count() == 0) {
+            throw new Exception();
+        }
+
+        // select the route to be updated and retourne the route objecr
+        $route_object = $route_dao->readRoute2($this->departure_address);
+
+        //update the route row with a new arrival for the end of the route
+        $route_dao->updateRoute2($this->departure_address);
+
+        // create a new route record into the table and than add it to the array
+        $route_id = $route_dao->createRoute($this->departure_address, $route_object->getArrivalAddress(), $route_object->getBookedSeats() + $seats_number);
+        $result.append($route_id);
+
+        //create a new travel booking
+        $booking_table = new BookingDAO($this->connection);
+        $booking_has_route = new BookingHasRouteDAO($this->connection);
+
+        $this->getUserId();
+        $booking_id = $booking_table->createBooking($this->user_id);
+
+        // iterate over all the route id in order to insert a new record into the
+        $i = $result->getIterator();
+        while($i->valid()) {
+            $booking_has_route->createBookingHasRoute($booking_id, $i->current());
+            $i->next();
+        }
+
+        return $booking_id;
     }
 
     public function addressNotExists($seats_number)
@@ -168,6 +248,13 @@ class Booking
 
             if ($query_result->num_rows == 0) {
 
+                /*
+                 *  TODO i casi possono essere tre:
+                 *      - l'indirizzo di arrivo e quello di partenza vengono prima del primo indirizzo all'interno  del db
+                 *      - l'indirizzo di arrivo e di partenza vengono dopo l'ultimo indirizzo all'interno del db
+                 *      - l'indirizzo di partenza e di arrivo sono compresi all'interno di un singolo record
+                 */
+
             } else {
                 $booked_seats = 0;
                 while ($row = $query_result->fetch_array()) {
@@ -176,12 +263,26 @@ class Booking
                         throw new SeatsNotAvailableExcpetions("for the route specified the minibus is full");
                 }
 
-
             }
 
         } else
-            throw new DatabaseExpcetion("database error, impossible to execute the query");
+            throw new DatabaseException("database error, impossible to execute the query");
 
+
+    }
+
+    private function getUserId() {
+        if (isset($this->user_id)) {
+            return $this->user_id;
+        }
+
+        // get the user id from the user table
+        $user_dao = new UserDAO($this->connection);
+        $this->user_id = $user_dao->readUser();
+        return $this->user_id;
+    }
+
+    private function createNewRoute($route_dao, $address) {
 
     }
 

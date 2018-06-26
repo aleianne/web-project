@@ -137,40 +137,40 @@ $("#delete-btn").click(function () {
 
 });
 
-function show_box(box_name) {
-    if (!$(box_name).is(":visible")) {
-        $(box_name).show();
-    }
-}
-
-function hide_box(box_name) {
-    if (!$(box_name).is(":hidden")) {
-        $(box_name).hide();
-    }
-}
-
-/* restore the old value */
-function restore_old_value() {
-
-    $("#login-form input[name=pwd]").get(0).setAttribute("type", "text");
-
-    var login_dom_obj = [];
-
-    var login_dom_obj = document.getElementById("log-input-box").getElementsByTagName("Input");
-
-    for (var i = 0; i < login_dom_obj.length; i++) {
-        login_dom_obj[i].value = login_dom_obj[i].defaultValue;
-    }
-
-   $("#delete-form input[name=bookID]").get(0).value = "";
-
-    hide_box("#delete-form .error-box");
-    hide_box("#login-form .error-box");
-}
-
-$(".modalclose").click( function () {
-    restore_old_value();
-});
+// function show_box(box_name) {
+//     if (!$(box_name).is(":visible")) {
+//         $(box_name).show();
+//     }
+// }
+//
+// function hide_box(box_name) {
+//     if (!$(box_name).is(":hidden")) {
+//         $(box_name).hide();
+//     }
+// }
+//
+// /* restore the old value */
+// function restore_old_value() {
+//
+//     $("#login-form input[name=pwd]").get(0).setAttribute("type", "text");
+//
+//     var login_dom_obj = [];
+//
+//     var login_dom_obj = document.getElementById("log-input-box").getElementsByTagName("Input");
+//
+//     for (var i = 0; i < login_dom_obj.length; i++) {
+//         login_dom_obj[i].value = login_dom_obj[i].defaultValue;
+//     }
+//
+//    $("#delete-form input[name=bookID]").get(0).value = "";
+//
+//     hide_box("#delete-form .error-box");
+//     hide_box("#login-form .error-box");
+// }
+//
+// $(".modalclose").click( function () {
+//     restore_old_value();
+// });
 
 
 

@@ -7,7 +7,7 @@
  */
 
     /* php script to check the login info sent by the client */
-    include "registration.php";
+    include "Registration.php";
     include  "http_control.php";
     include "db_request.php";
 
@@ -36,7 +36,7 @@
         switch ($_SERVER["REQUEST_METHOD"]) {
             case "GET":
                 if (isset($_GET["name"]) && isset($_GET["surname"]) && isset($_GET["email"]) && isset($_GET["1-pwd"]))
-                    $reg_info = new registration($_GET["name"], $_GET["surname"], $_GET["email"], $_GET["1-pwd"]);
+                    $reg_info = new Registration($_GET["name"], $_GET["surname"], $_GET["email"], $_GET["1-pwd"]);
                 else {
                     throw new Exception("parameters passed are not valid", 1);
                 }
@@ -44,7 +44,7 @@
 
             case "POST":
                 if (isset($_POST["name"]) && isset($_POST["surname"]) && isset($_POST["email"]) && isset($_POST["1-pwd"]))
-                    $reg_info = new registration($_POST["name"], $_POST["surname"], $_POST["email"], $_POST["1-pwd"]);
+                    $reg_info = new Registration($_POST["name"], $_POST["surname"], $_POST["email"], $_POST["1-pwd"]);
                 else {
                     throw new Exception("the parameters passed are not valid", 1);
                 }

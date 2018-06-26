@@ -93,8 +93,44 @@ function registrationSubmit() {
         url: registrationPage,
         type: "post",
         data: post_data,
-        success: successFunction(response, status, xhr),
-        error: errorFunction(xhr, status, err)
+        success: function (response, status, xhr) {
+            switch (response) {
+                case "err_1":
+                    /* generic database error */
+                    showBox(".error-box");
+                    $("#registration-form").find("#registration-error-box").html("Error: DB returned an error");
+                    break;
+                case "err_2":
+                    /* username already exist*/
+                    showBox(".error-box");
+                    $("#registration-form").find("#registration-error-box").html("Error: the username already exist");
+                    break;
+                case "err_3":
+                    /* the field are empty*/
+                    showBox(".error-box");
+                    $("#registration-form").find("#registration-error-box").html("Error: the field are empty");
+                    break;
+                case "ok":
+                    window.location.href = nextPage;
+                    restoreOldValues();
+                    break;
+                case "redirect":
+                    window.confirm("redirection");
+                    break;
+                default:
+                    console.log("is not possible to decode the value returned by the server");
+                    break;
+            }
+        },
+        error: function (xhr, status, err) {
+            showBox("#registration-form .error-box");
+            var err_string;
+
+            if (typeof(err) !== undefined)
+                err_string = status + " " + err;
+
+            $("#registration-form").find("#registration-error-box").html("Error: " + err_string );
+        }
     });
 }
 
@@ -116,42 +152,5 @@ function passwordRealTimeCheck() {
             passwordElement.show();
 }
 
-function errorFunction(xhr, status, err) {
-    showBox("#registration-form .error-box");
-    var err_string;
 
-    if (typeof(err) !== undefined)
-        err_string = status + " " + err;
 
-    $("#registration-form").find("#registration-error-box").html("Error: " + err_string );
-}
-
-function successFunction(response, status, xhr) {
-    switch (response) {
-        case "err_1":
-            /* generic database error */
-            showBox(".error-box");
-            $("#registration-form").find("#registration-error-box").html("Error: DB returned an error");
-            break;
-        case "err_2":
-            /* username already exist*/
-            showBox(".error-box");
-            $("#registration-form").find("#registration-error-box").html("Error: the username already exist");
-            break;
-        case "err_3":
-            /* the field are empty*/
-            showBox(".error-box");
-            $("#registration-form").find("#registration-error-box").html("Error: the field are empty");
-            break;
-        case "ok":
-            window.location.href = nextPage;
-            restoreOldValues();
-            break;
-        case "redirect":
-            window.confirm("redirection");
-            break;
-        default:
-            console.log("is not possible to decode the value returned by the server");
-            break;
-    }
-}

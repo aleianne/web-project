@@ -6,14 +6,21 @@
  * Time: 22.46
  */
 
-class SeatsNotAvailableExcpetions extends Exception {
+class SeatsNotAvailableException extends Exception {
 
     public function __construct($message = "", $code = 0, Throwable $previous = null) {
         parent::__construct($message, $code, $previous);
     }
 }
 
-class DatabaseExpcetion extends  Exception {
+class DatabaseException extends  Exception {
+
+    public function __construct($message = "", $code = 0, Throwable $previous = null) {
+        parent::__construct($message, $code, $previous);
+    }
+}
+
+class RecordNotFoundException extends Exception {
 
     public function __construct($message = "", $code = 0, Throwable $previous = null) {
         parent::__construct($message, $code, $previous);

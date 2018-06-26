@@ -11,10 +11,10 @@
     <title>Skipass purchase system</title>
 
     <!-- Bootstrap Core CSS -->
-    <link href="./Layout/css/bootstrap.min.css" rel="stylesheet">
+    <link href="./css/bootstrap.min.css" rel="stylesheet">
 
     <!-- Custom CSS -->
-    <link href="./Layout/css/simple-sidebar.css" rel="stylesheet">
+    <link href="./css/simple-sidebar.css" rel="stylesheet">
 
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -32,56 +32,56 @@
     <!-- shadow anchor to activate the leanModal -->
     <a href="#login-container" rel="leanModal" style="display: none" id="login-trigger"></a>
 
-    <!-- Gift SkiPass -->
-    <div id="delete-container" class="popup-container" style="display: none;">
-        <header>
-            <div id="header-div">
-                <div>
-                </div>
-                <div class="popup-title">
-                    Gift SkiPass
-                </div>
-                <div>
-                    <a class="modalclose" href="#"></a>
-                </div>
-        </header>
-        <section>
-            <form id="gift-form">
-                <div class="error-box"></div>
-                <div id="user-gift-input-box">
-                    <input title="" type="text" name="username" placeholder="username of the gift receiver"><br>
-                </div>
-                <div id="gift-action-box">
-                    <div id="gift-button" class="submit-btn" >
-                        <a href="#" id="delete" >Delete</a>
-                    </div>
-                </div>
-            </form>
-        </section>
-    </div>
-    <!-- end delete form -->
+<!--    <!-- Gift SkiPass -->-->
+<!--    <div id="delete-container" class="popup-container" style="display: none;">-->
+<!--        <header>-->
+<!--            <div id="header-div">-->
+<!--                <div>-->
+<!--                </div>-->
+<!--                <div class="popup-title">-->
+<!--                    Gift SkiPass-->
+<!--                </div>-->
+<!--                <div>-->
+<!--                    <a class="modalclose" href="#"></a>-->
+<!--                </div>-->
+<!--        </header>-->
+<!--        <section>-->
+<!--            <form id="gift-form">-->
+<!--                <div class="error-box"></div>-->
+<!--                <div id="user-gift-input-box">-->
+<!--                    <input title="" type="text" name="username" placeholder="username of the gift receiver"><br>-->
+<!--                </div>-->
+<!--                <div id="gift-action-box">-->
+<!--                    <div id="gift-button" class="submit-btn" >-->
+<!--                        <a href="#" id="delete" >Delete</a>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--            </form>-->
+<!--        </section>-->
+<!--    </div>-->
+<!--    <!-- end delete form -->-->
 
     <!-- login form -->
     <div id="login-container" class="popup-container" style="display: none;">
         <header>
             <div id="header-div">
-                <div>
-                </div>
+                <div></div>
                 <div class="popup-title">
                     Login
                 </div>
                 <div>
                     <a class="modalclose" href="#"></a>
                 </div>
+            </div>
         </header>
         <section>
             <form id="login-form">
-                <div class="error-box"></div>
-                <div id="log-input-box">
-                    <input title="" type="text" name="email" placeholder="Email address" da><br>
-                    <input title="" type="text" name="pwd" placeholder="Password"><br>
+                <div id="login-error-box" class="error-box"></div>
+                <div id="login-input-box">
+                    <input title="" type="text" name="email" placeholder="Email address"><br>
+                    <input title="" type="password" name="password" placeholder="Password"><br>
                 </div>
-                <div id="log-action-box">
+                <div class="action-box">
                     <div id="login-btn" class="submit-btn">
                         <a href="#">Login</a>
                     </div>
@@ -123,13 +123,10 @@
                 </a>
             </li>
             <li>
-                <a href="#" id="logout">Logout<img src="./Layout/image/icons8-Forward-48.png" id="arrow2"></a>
+                <a href="#" id="logout">Logout<img src="./images/icons8-Forward-48.png" id="arrow2"></a>
             </li>
             <li>
-                <a href="#gift-container" id="gift-skipass" rel="leanModal">Gift SkiPass<img src="./Layout/image/icons8-Forward-48.png" id="arrow2"></a>
-            </li>
-            <li>
-                <a href="#purchase-container" id="purchase-skipass" rel="leanModal">Purchase SkiPass<img src="./Layout/image/icons8-Forward-48.png" id="arrow2"></a>
+                <a href="#purchase-container" id="seats-booking" rel="leanModal">Purchase SkiPass<img src="./images/icons8-Forward-48.png" id="arrow2"></a>
             </li>
         </ul>
     </div>
@@ -140,7 +137,7 @@
 
         <!-- #toolbar -->
         <div id="titlebar">
-            <div id="first-col"><img src="./Layout/image/icons8-Menu-48.png" id="sidebar-icon"></div>
+            <div id="first-col"><img src="./images/icons8-Menu-48.png" id="sidebar-icon"></div>
             <div id="second-col">
                 <form class="form-inline" style=" float: right; margin-right: 5px; margin-top: 5px;">
                     <div class="form-group">
@@ -240,11 +237,17 @@
 <!-- Bootstrap Core JavaScript -->
 <script src="logic/bootstrap.min.js"></script>
 
-<script src="logic/client_request.js"></script>
+<script src="js/client_request.js"></script>
 
-<script src="logic/login.js"></script>
+<script src="js/login.js"></script>
 
-<script src="logic/DOM_controller_user_page.js"></script>
+<script src="js/DOM_controller_user_page.js"></script>
+
+<script src="">
+    $(document).ready(function() {
+
+    })
+</script>
 
 <script type="text/javascript">
     var x = navigator.cookieEnabled;
@@ -255,7 +258,6 @@
     if (x == false) {
         document.body.innerHTML = disable_page;
     }
-
 </script>
 
 </body>

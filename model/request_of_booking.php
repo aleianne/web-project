@@ -72,46 +72,54 @@
         die($server_response['par_error']);
     }
 
+    // create a new mysql connecion
     $mysql_conn = new mysqli(db_host, db_user, db_pwd, db_name);
 
     if($mysql_conn->connect_errno)
         die($server_response['db_error']);
 
+    // disable the autocommit
+    if (!$mysql_conn->autocommit(false))
+        die($server_response['db_error']);
 
     try {
-
-        if (!$mysql_conn->autocommit(false))
-            throw new Exception("Impossible to disable the autocommit");
-
         // strip all the parameter passed by the client and make lower case
-        $stripped_departure  = strtolower($conn->real_escape_string($departure));
+        $stripped_departure = strtolower($conn->real_escape_string($departure));
         $stripped_arrival = strtolower($conn->real_escape_string($arrival));
 
         $booking = new Booking($mysql_conn, $stripped_departure, $stripped_arrival);
 
+        // start a new transaction
+        $mysql_conn->begin_transaction();
+
+        $booking_id = 0;
+
         if ($departure_exists && $arrival_exists) {
-            $mysql_conn->start_transaction();
-            $booking->addressAlreadyExists($seats_number);
-            $mysql_conn->commit();
+            $booking_id = $booking->addressAlreadyExists($seats_number);
         } else if ($departure_exists && !$arrival_exists) {
-            $booking->departureAddressExists($seats_number);
+            $booking_id = $booking->departureAddressExists($seats_number);
         } else if (!$departure_exists && $arrival_exists) {
-            $booking->arrivalAddressExists($seats_number);
+            $booking_id = $booking->arrivalAddressExists($seats_number);
         } else if (!$departure_exists && !$arrival_exists) {
-            $booking->addressNotExists($seats_number);
+            $booking_id = $booking->addressNotExists($seats_number);
         }
 
+        // commit the transaction
+        $mysql_conn->commit();
 
         $mysql_conn->close();
 
+    } catch (DatabaseException $dbe) {
+        $mysql_conn->rollback();
+        $mysql_conn->close();
+        die($server_response["db_error"]);
+    } catch (SeatsNotAvailableException $sne) {
+        $mysql_conn->rollback();
+        $mysql_conn->close();
     } catch (Exception $e) {
         $mysql_conn->rollback();
         $mysql_conn->close();
         die($server_response['db_error']);
-    } catch (DatabaseExpcetion $dbe) {
-        $mysql_conn->rollback();
-        $mysql_conn->close();
-        die($server_response["db_error"]);
     }
 
 
