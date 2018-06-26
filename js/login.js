@@ -83,8 +83,8 @@ function loginSubmit() {
 
     if (loginUser.email.isEmpty() || loginUser.password.isEmpty()){
         // show the error box
-        showBox(loginFormErrorBox);
         loginFormErrorBox.html("Error: field are empty");
+        showBox(loginFormErrorBox);
 
         // add an aminamtion to the input box
         if (loginUser.email.isEmpty() &&  loginUser.password.isEmpty()) {
@@ -140,12 +140,12 @@ function loginSubmit() {
                     break;
                 case "err_3":
                     showBox(loginFormErrorBox);
-                    loginFormErrorBox.html("Error: the Password is no correct");
+                    loginFormErrorBox.html("Error: Password is no correct");
                     break;
                 case "err_4":
                     /* generic database error */
                     showBox(loginFormErrorBox);
-                    loginFormErrorBox.html("Error:  DB returned an error");
+                    loginFormErrorBox.html("Error: DB returned an error");
                     break;
                 case "err_5":
                     /*field are empty */

@@ -6,8 +6,9 @@
  * Time: 18.35
  */
 
-    include "db_request.php";
-    include "http_control.php";
+    require_once "db_request.php";
+    require_once "http_control.php";
+    require_once "Exceptions.php";
 
     $server_response = [
       'db_error'=>'err_1',
@@ -33,43 +34,38 @@
 
     set_time_session();
 
-   try {
-        switch ($_SERVER['REQUEST_METHOD']) {
-            case 'GET':
-                if (isset($_GET['dep-address']) && isset($_GET['arr-address'])
-                    && isset($_GET["dep_exists"]) && isset($_GET["arr_exists"])
-                    && isset($_GET["seats_number"])) {
-                    $departure = $_GET['dep-address'];
-                    $arrival = $_GET['arr-address'];
-                    $departure_exists = $_GET["dep_exists"];
-                    $arrival_exists = $_GET["arr_exists"];
-                    $seats_number = $_GET["seats_number"];
-                }
-                else
-                    throw new Exception("parameters passed are not valid", 1);
+    switch ($_SERVER['REQUEST_METHOD']) {
+        case 'GET':
+            if (isset($_GET['dep-address']) && isset($_GET['arr-address'])
+                && isset($_GET["dep_exists"]) && isset($_GET["arr_exists"])
+                && isset($_GET["seats_number"])) {
+                $departure = $_GET['dep-address'];
+                $arrival = $_GET['arr-address'];
+                $departure_exists = $_GET["dep_exists"];
+                $arrival_exists = $_GET["arr_exists"];
+                $seats_number = $_GET["seats_number"];
+            }
+            else
+                die($server_response['par_error']);
+            break;
 
-                break;
+        case 'POST':
+            if (isset($_POST['dep-address']) && isset($_POST['arr-address'])
+                && isset($_POST["dep_exists"]) && isset($_POST["arr_exists"])
+                && isset($_POST["seats_number"])) {
+                $departure = $_POST['dep-address'];
+                $arrival = $_POST['arr-address'];
+                $departure_exists = $_POST["dep_exists"];
+                $arrival_exists = $_POST["arr_exists"];
+                $seats_number  = $_POST["seats_number"];
+            }
+            else
+                die($server_response['par_error']);
+            break;
 
-            case 'POST':
-                if (isset($_POST['dep-address']) && isset($_POST['arr-address'])
-                    && isset($_POST["dep_exists"]) && isset($_POST["arr_exists"])
-                    && isset($_POST["seats_number"])) {
-                    $departure = $_POST['dep-address'];
-                    $arrival = $_POST['arr-address'];
-                    $departure_exists = $_POST["dep_exists"];
-                    $arrival_exists = $_POST["arr_exists"];
-                    $seats_number  = $_POST["seats_number"];
-                }
-                else
-                    throw new Exception("the parameters passed are not valid", 1);
-
-                break;
-
-            default:
-                break;
-        }
-    } catch(Exception $e) {
-        die($server_response['par_error']);
+        default:
+            die($server_response['par_error']);
+            break;
     }
 
     // create a new mysql connecion
@@ -84,8 +80,8 @@
 
     try {
         // strip all the parameter passed by the client and make lower case
-        $stripped_departure = strtolower($conn->real_escape_string($departure));
-        $stripped_arrival = strtolower($conn->real_escape_string($arrival));
+        $stripped_departure = strtolower($mysql_conn->real_escape_string($departure));
+        $stripped_arrival = strtolower($mysql_conn->real_escape_string($arrival));
 
         $booking = new Booking($mysql_conn, $stripped_departure, $stripped_arrival);
 
@@ -121,6 +117,11 @@
         $mysql_conn->close();
         die($server_response['db_error']);
     }
+//    catch(RecordNotFoundException $rne) {
+//        $mysql_conn->rollback();
+//        $mysql_conn->close();
+//        die($server_response['db_error']);
+//    }
 
 
 

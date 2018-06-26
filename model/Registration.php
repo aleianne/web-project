@@ -7,9 +7,9 @@
  * Time: 11.07
  */
 
-include "UserDAO.php";
-include "UserUtil.php";
-include "User.php";
+require_once "UserDAO.php";
+require_once "UserUtil.php";
+require_once "User.php";
 
 class Registration {
 
@@ -56,10 +56,11 @@ class Registration {
 
     public function checkRegistrationData() {
         if (empty($this->username) || empty($this->password))
-            throw new Exception("the field are empty");
+           return false;
 
         $this->username = strip_tags($this->username);
         $this->password = strip_tags($this->password);
+        return true;
     }
 
     public function registerUser($connection)

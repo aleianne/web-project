@@ -9,7 +9,7 @@
 
 include "User.php";
 include "UserDAO.php";
-include "UserUtil.php";
+require_once "UserUtil.php";
 
 class Login {
 
@@ -54,12 +54,13 @@ class Login {
     }
 
     public function checkLoginDataValidity() {
-        if (empty($this->password)  || empty($this->username)) {
-            throw new Exception("the password or the username are empty");
-        }
+        if (empty($this->password)  || empty($this->username))
+            return false;
+
 
         $this->password = strip_tags($this->password);
         $this->username = strip_tags($this->username);
+        return true;
     }
 
 //    public function getUser(){

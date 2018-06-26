@@ -6,7 +6,7 @@
  * Time: 17.05
  */
 
-include "exceptions.php";
+require_once "Exceptions.php";
 
 class UserDAO {
 
@@ -53,9 +53,6 @@ class UserDAO {
             throw new DatabaseException("impossible to read record from the user table, database excpetion");
         }
     }
-
-
-
 
 }
 

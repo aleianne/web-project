@@ -13,8 +13,11 @@
     <!-- Bootstrap Core CSS -->
     <link href="./css/bootstrap.min.css" rel="stylesheet">
 
-    <!-- Custom CSS -->
+    <!-- Cuscss CSS -->
     <link href="./css/simple-sidebar.css" rel="stylesheet">
+
+    <link href="./css/modal-window-style.css" rel="stylesheet">
+    <link href="./css/page-main-container-style.css" rel="stylesheet">
 
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -23,6 +26,11 @@
     <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
     <![endif]-->
 
+    <!-- jQuery -->
+    <script type="text/javascript" src="./js-library/jquery.js"></script>
+
+    <!--leanModal library -->
+    <script type="text/javascript" src="./js-library/jquery.leanModal.min.js"></script>
 </head>
 
 <body>
@@ -61,38 +69,8 @@
 <!--    </div>-->
 <!--    <!-- end delete form -->-->
 
-    <!-- login form -->
-    <div id="login-container" class="popup-container" style="display: none;">
-        <header>
-            <div id="header-div">
-                <div></div>
-                <div class="popup-title">
-                    Login
-                </div>
-                <div>
-                    <a class="modalclose" href="#"></a>
-                </div>
-            </div>
-        </header>
-        <section>
-            <form id="login-form">
-                <div id="login-error-box" class="error-box"></div>
-                <div id="login-input-box">
-                    <input title="" type="text" name="email" placeholder="Email address"><br>
-                    <input title="" type="password" name="password" placeholder="Password"><br>
-                </div>
-                <div class="action-box">
-                    <div id="login-btn" class="submit-btn">
-                        <a href="#">Login</a>
-                    </div>
-                </div>
-            </form>
-        </section>
-    </div>
-    <!-- end login form -->
-
     <!-- purchase Skipass -->
-    <div id="purchase-container" class="popup-container" style="display: none;">
+    <div id="booking-container" class="popup-container" style="display: none;">
         <header>
             <div id="header-div">
                 <div>
@@ -105,7 +83,37 @@
                 </div>
         </header>
         <section>
-            <form id="purchase-form" class="form-inline">
+            <form id="booking-form" class="form-inline">
+                <span class="label label-info">Departure</span>
+                <div id="departure-form">
+                    <div class="input-group">
+                        <span class="input-group-addon">
+                            <input id="departure-1" type="checkbox" aria-label="...">
+                        </span>
+                        <select class="form-control"></select>
+                    </div>
+                    <div class="input-group">
+                        <span class="input-group-addon">
+                            <input id="departure-2" type="checkbox" aria-label="...">
+                        </span>
+                        <input type="text" class="form-control" aria-label="...">
+                    </div>
+                </div>
+                <span class="label label-info">Arrival</span>
+                <div id="arrival-form">
+                    <div class="input-group">
+                        <span class="input-group-addon">
+                            <input id="arrival-1" type="checkbox" aria-label="...">
+                        </span>
+                       <select class="form-control"></select>
+                    </div>
+                    <div class="input-group">
+                        <span class="input-group-addon">
+                            <input id="arrival-2" type="checkbox" aria-label="...">
+                        </span>
+                        <input type="text" class="form-control" aria-label="...">
+                    </div>
+                </div>
                 <div id="purchase-button" class="submit-btn">
                     <a href="#">Purchase!</a>
                 </div>
@@ -126,7 +134,7 @@
                 <a href="#" id="logout">Logout<img src="./images/icons8-Forward-48.png" id="arrow2"></a>
             </li>
             <li>
-                <a href="#purchase-container" id="seats-booking" rel="leanModal">Purchase SkiPass<img src="./images/icons8-Forward-48.png" id="arrow2"></a>
+                <a href="#booking-container" id="seats-booking" rel="leanModal">Booking Seats<img src="./images/icons8-Forward-48.png" id="arrow2"></a>
             </li>
         </ul>
     </div>
@@ -165,58 +173,58 @@
                 <div class="col-lg-12" id="list-div">
                     <h1>Students registered</h1>
                     <div>
-                        <?php
-
-                        include("./model/db_request.php");
-                        define ("tot_num_call", 3);
-
-                        /* query the database to*/
-                        try {
-
-                            $mysql_conn = new mysqli(db_host,db_user, db_pwd, db_name);
-
-                            if ($mysql_conn->connect_errno) {
-                                throw new Exception("Problem during the db connection");
-                            }
-
-                            $total_booked = 0;
-
-                            for ($i = 1; $i <= tot_num_call ; $i++) {
-
-                                $list = request_list($mysql_conn, $i);
-                                if (empty($list)) {
-                                    /* div with no data */
-                                    echo "<div class='panel panel-default'>";
-                                    echo "<div class='panel-heading'><h3>call n°".$i."</h3></div>";
-                                    echo "<div class='panel-body'><p>no seats booked for this call</p></div>";
-                                    echo "</div>";
-                                    continue;
-                                }
-
-                                echo "<div class='panel panel-default' style='margin 10px;'>";
-                                echo "<div class='panel-heading'><h3>call n°".$i."</h3></div>";
-                                echo "<div class='panel-body'>";
-                                $j = 0;
-                                foreach($list as $value) {
-                                    $j++;
-                                    echo "<p>".$j."   ".$value."</p><br>";
-                                }
-                                $call_booked = sizeof($list);
-
-                                echo "<p class='string1'>Number of students for this call: ".$call_booked."</p>";
-                                echo "</div>";
-                                echo "</div>";
-
-                                $total_booked += $call_booked;
-                            }
-
-                            echo "<h2>Total number of students: ".$total_booked."</h2>";
-
-                            $mysql_conn->close();
-
-                        } catch (Exception $e) {
-                            $mysql_conn->close();
-                        }
+                          <?php
+//
+//                        include("./model/db_request.php");
+//                        define ("tot_num_call", 3);
+//
+//                        /* query the database to*/
+//                        try {
+//
+//                            $mysql_conn = new mysqli(db_host,db_user, db_pwd, db_name);
+//
+//                            if ($mysql_conn->connect_errno) {
+//                                throw new Exception("Problem during the db connection");
+//                            }
+//
+//                            $total_booked = 0;
+//
+//                            for ($i = 1; $i <= tot_num_call ; $i++) {
+//
+//                                $list = request_list($mysql_conn, $i);
+//                                if (empty($list)) {
+//                                    /* div with no data */
+//                                    echo "<div class='panel panel-default'>";
+//                                    echo "<div class='panel-heading'><h3>call n°".$i."</h3></div>";
+//                                    echo "<div class='panel-body'><p>no seats booked for this call</p></div>";
+//                                    echo "</div>";
+//                                    continue;
+//                                }
+//
+//                                echo "<div class='panel panel-default' style='margin 10px;'>";
+//                                echo "<div class='panel-heading'><h3>call n°".$i."</h3></div>";
+//                                echo "<div class='panel-body'>";
+//                                $j = 0;
+//                                foreach($list as $value) {
+//                                    $j++;
+//                                    echo "<p>".$j."   ".$value."</p><br>";
+//                                }
+//                                $call_booked = sizeof($list);
+//
+//                                echo "<p class='string1'>Number of students for this call: ".$call_booked."</p>";
+//                                echo "</div>";
+//                                echo "</div>";
+//
+//                                $total_booked += $call_booked;
+//                            }
+//
+//                            echo "<h2>Total number of students: ".$total_booked."</h2>";
+//
+//                            $mysql_conn->close();
+//
+//                        } catch (Exception $e) {
+//                            $mysql_conn->close();
+//                        }
                         ?>
                     </div>
                 </div>
@@ -228,22 +236,18 @@
 </div>
 <!-- /#wrapper -->
 
-<!-- jQuery -->
-<script src="logic/jquery.js"></script>
 
-<!--leanModal library -->
-<script type="text/javascript" src="logic/jquery.leanModal.min.js"></script>
 
 <!-- Bootstrap Core JavaScript -->
-<script src="logic/bootstrap.min.js"></script>
+<script type="text/javascript"src="./js-library/bootstrap.min.js"></script>
 
-<script src="js/client_request.js"></script>
+<script type="text/javascript" src="./js/client_request.js"></script>
 
-<script src="js/login.js"></script>
+<script type="text/javascript" src="./js/login.js"></script>
 
-<script src="js/DOM_controller_user_page.js"></script>
+<script type="text/javascript" src="./js/DOM_controller_user_page.js"></script>
 
-<script src="">
+<script type="text/javascript">
     $(document).ready(function() {
 
     })

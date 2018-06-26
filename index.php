@@ -20,7 +20,7 @@
     <!-- Cuscss CSS -->
     <link href="./css/simple-sidebar.css" rel="stylesheet">
 
-    <link href="css/modal-window-style.css" rel="stylesheet">
+    <link href="./css/modal-window-style.css" rel="stylesheet">
     <link href="./css/page-main-container-style.css" rel="stylesheet">
 
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
@@ -31,13 +31,13 @@
     <![endif]-->
 
     <!-- jQuery -->
-    <script type="text/javascript" src="./logic/jquery.js"></script>
+    <script type="text/javascript" src="js-library/jquery.js"></script>
 
     <!-- Bootstrap Core JavaScript -->
-    <script src="logic/bootstrap.min.js"></script>
+    <script type="text/javascript" src="js-library/bootstrap.min.js"></script>
 
     <!--leanModal library -->
-    <script type="text/javascript" src="./logic/jquery.leanModal.min.js"></script>
+    <script type="text/javascript" src="js-library/jquery.leanModal.min.js"></script>
 
 </head>
 

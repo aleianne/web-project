@@ -248,19 +248,19 @@
 <!-- /#wrapper -->
 
 <!-- jQuery -->
-<script src="/logic/jquery.js"></script>
+<script src="/js-library/jquery.js"></script>
 
 <!--leanModal library -->
-<script type="text/javascript" src="/logic/jquery.leanModal.min.js"></script>
+<script type="text/javascript" src="/js-library/jquery.leanModal.min.js"></script>
 
 <!-- Bootstrap Core JavaScript -->
-<script src="/logic/bootstrap.min.js"></script>
+<script src="/js-library/bootstrap.min.js"></script>
 
-<script src="/logic/booking_request.js"></script>
+<script src="/js-library/booking_request.js"></script>
 
-<script src="/logic/login.js"></script>
+<script src="/js-library/login.js"></script>
 
-<script src="/logic/DOM_controller_user_page.js"></script>
+<script src="/js-library/DOM_controller_user_page.js"></script>
 
 <script type="text/javascript">
     var x = navigator.cookieEnabled;

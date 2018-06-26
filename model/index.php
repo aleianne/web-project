@@ -218,19 +218,19 @@
     <!-- /#wrapper -->
 
     <!-- jQuery -->
-    <script type="text/javascript" src="/logic/jquery.js"></script>
+    <script type="text/javascript" src="/js-library/jquery.js"></script>
 
     <!--leanModal library -->
-    <script type="text/javascript" src="/logic/jquery.leanModal.min.js"></script>
+    <script type="text/javascript" src="/js-library/jquery.leanModal.min.js"></script>
 
     <!-- Bootstrap Core JavaScript -->
-    <script src="/logic/bootstrap.min.js"></script>
+    <script src="/js-library/bootstrap.min.js"></script>
 
     <!-- DOM object controller -->
-    <script type="text/javascript" src="/logic/DOM_controller.js"></script>
+    <script type="text/javascript" src="/js-library/DOM_controller.js"></script>
 
     <!--login js  -->
-    <script type="text/javascript" src="/logic/login.js"></script>
+    <script type="text/javascript" src="/js-library/login.js"></script>
 
     <script type="text/javascript">
         var x = navigator.cookieEnabled;

@@ -6,6 +6,8 @@
  * Time: 17.23
  */
 
+require_once "Exceptions.php";
+
 class RouteDAO {
 
     private $connection;
@@ -13,7 +15,6 @@ class RouteDAO {
     public function __construct($connection) {
         $this->connection;
     }
-
 
     public function createRoute($departure_address, $arrival_address, $booked_seats) {
         $query1 = "INSERT INTO route('$departure_address', '$arrival_address', '$booked_seats') "
@@ -27,7 +28,6 @@ class RouteDAO {
         } else {
             throw new DatabaseException("impossible to insert a new route, database error");
         }
-
     }
 
     public function readFirstRoute() {
@@ -37,6 +37,7 @@ class RouteDAO {
         if ($query_result = $this->connection->query()) {
 
             $departure_address = $query_result->array_fetch(MYSQLI_ASSOC)["departure_address"];
+            $query_result->close();
             return $departure_address;
         } else {
             throw new DatabaseException("impossible to read a route, database error");
@@ -50,6 +51,7 @@ class RouteDAO {
         if ($query_result = $this->connection->query()) {
 
             $arrival_address = $query_result->array_fetch(MYSQLI_ASSOC)["departure_address"];
+            $query_result->close();
             return $arrival_address;
         } else {
             throw new DatabaseException("impossible to read a route, database error");

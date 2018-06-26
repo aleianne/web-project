@@ -7,8 +7,9 @@
  */
 
     include "Login.php";
-    include "http_control.php";
-    include "db_request.php";
+    require_once "http_control.php";
+    require_once "db_request.php";
+    require_once "Exceptions.php";
 
 /*header('Content-Type: application/json;charset=UTF-8');
 header('Access-Control-Allow-Origin: *');
@@ -22,13 +23,14 @@ define ("db_port", 3306);
 define ("db_name", "sito_web");
 define ("db_pwd", "");*/
 
-    $server_response = array('username_err'=>'err_1',
+    $server_response = ['username_err'=>'err_1',
         'db_conn_err'=>'err_2',
         'pwd_err'=>'err_3',
         'db_err'=>'err_4',
         'param_err'=>'err_5',
+        'empty_field'=>'err_6',
         'ok_login'=>'ok'
-        );
+        ];
 
     /* begin the session */
     session_start();
@@ -60,10 +62,10 @@ define ("db_pwd", "");*/
     }
 
 
+    if (!$login_info->checkLoginDataValidity())
+        die($server_response["empty_field"]);
+
     try {
-
-        $login_info->checkLoginDataValidity();
-
         /* check the user info inside the DB */
         $mysql_conn = new mysqli(db_host, db_user, db_pwd, db_name);
 
@@ -102,11 +104,10 @@ define ("db_pwd", "");*/
 
         $result = $login_info->checkLoginInfo($mysql_conn);
 
-        if ($result) {
+        if ($result)
             $response = $server_response["ok_login"];
-        } else {
+         else
             $response = $server_response["pwd_err"];
-        }
 
         // close the script and return the parameter to the client
         $mysql_conn->close();
@@ -118,8 +119,5 @@ define ("db_pwd", "");*/
     } catch(RecordNotFoundException $re) {
         $mysql_conn->close();
         die($server_response["username_err"]);
-    } catch(Exception $e) {
-        $mysql_conn->close();
-        die($server_response["db_err"]);
     }
 

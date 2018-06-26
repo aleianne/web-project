@@ -58,32 +58,34 @@ function registrationSubmit() {
     var password1Element = registrationForm.find("input[name='first-password']");
     var password2Element = registrationForm.find("input[name='second-password']");
 
+    var errorBox = registrationForm.find(".error-box");
+
     // create a new user object
     var user = new User(new Email(userMailElement.val()), new Password(password1Element.val()));
 
     var registrationUser = new Registration(user, new Password(password2Element.val()));
 
     if (!registrationUser.checkRegistrationValidity()) {
-        showBox("#registration-form .error-box");
-        registrationForm.find("#registration-error-box").html("Error: fields empty!");
+        showBox(errorBox);
+        errorBox.html("Error: fields empty!");
         return;
     }
 
     if (!registrationUser.user.email.isValid()) {
-        showBox("#registration-form .error-box");
-        registrationForm.find("#registration-error-box").html("Error: email address is not valid");
+        showBox(errorBox);
+        errorBox.html("Error: email address is not valid");
         return;
     }
 
     if (!registrationUser.checkPasswordValidity()) {
-        showBox("#registration-form .error-box");
-        registrationForm.find("#registration-error-box").html("Error: password not valid");
+        showBox(errorBox);
+        errorBox.html("Error: password not valid");
         return;
     }
 
     if (!registrationUser.checkPasswordEquality()) {
-        showBox("#registration-form .error-box");
-        registrationForm.find("#registration-error-box").html("Error: passwords are different");
+        showBox(errorBox);
+        errorBox.html("Error: passwords are different");
         return;
     }
 
@@ -97,18 +99,18 @@ function registrationSubmit() {
             switch (response) {
                 case "err_1":
                     /* generic database error */
-                    showBox(".error-box");
-                    $("#registration-form").find("#registration-error-box").html("Error: DB returned an error");
+                    showBox(errorBox);
+                    errorBox.html("Error: DB returned an error");
                     break;
                 case "err_2":
                     /* username already exist*/
-                    showBox(".error-box");
-                    $("#registration-form").find("#registration-error-box").html("Error: the username already exist");
+                    showBox(errorBox);
+                    errorBox.html("Error: the username already exist");
                     break;
                 case "err_3":
                     /* the field are empty*/
-                    showBox(".error-box");
-                    $("#registration-form").find("#registration-error-box").html("Error: the field are empty");
+                    showBox(errorBox);
+                    errorBox.html("Error: the field are empty");
                     break;
                 case "ok":
                     window.location.href = nextPage;
@@ -129,7 +131,7 @@ function registrationSubmit() {
             if (typeof(err) !== undefined)
                 err_string = status + " " + err;
 
-            $("#registration-form").find("#registration-error-box").html("Error: " + err_string );
+            errorBox.html("Error: " + err_string );
         }
     });
 }

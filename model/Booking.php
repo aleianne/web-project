@@ -8,6 +8,11 @@
 
 define("max_seats", 4);
 
+require_once "Exceptions.php";
+require_once "RouteDAO.php";
+require_once "Route.php";
+include "BookingDAO.php";
+
 class Booking
 {
     private $connection;
@@ -156,20 +161,19 @@ class Booking
 
        // TODO insert a new route into the table
 
-       if (result.count() == 0) {
+       if ($result->count() == 0) {
            throw new Exception();
        }
 
-       // select the route to be updated and retourne the route objecr
-        $route_object = $route_dao->readRoute2($this->arrival_address);
-
+        // select the route to be updated and retourne the route objecr
+        //$route_object = $route_dao->readRoute2($this->arrival_address);
 
        //update the route row with a new arrival for the end of the route
        $route_dao->updateRoute2($this->arrival_address);
 
        // create a new route record into the table and than add it to the array
        $route_id = $route_dao->createRoute($this->arrival_address, $route_object->getArrivalAddress(), $route_object->getBookedSeats() + $seats_number);
-       $result.append($route_id);
+       $result->append($route_id);
 
        //create a new travel booking
        $booking_table = new BookingDAO($this->connection);
@@ -177,7 +181,6 @@ class Booking
 
        $this->getUserId();
        $booking_id = $booking_table->createBooking($this->user_id);
-
 
         // iterate over all the route id in order to insert a new record into the
         $i = $result->getIterator();
@@ -278,7 +281,7 @@ class Booking
 
         // get the user id from the user table
         $user_dao = new UserDAO($this->connection);
-        $this->user_id = $user_dao->readUser();
+        $this->user_id = $user_dao->readUser($this->suern);
         return $this->user_id;
     }
 
