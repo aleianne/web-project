@@ -2,30 +2,49 @@
  * Created by utente pc on 24/08/2017.
  */
 
-$("#purchase-button").click(function () {
 
-    //var first_choice = $("#first-slc option:selected").text();
-    //var second_choice = $("#second-slc option:selected").text();
-    var page_url = "./model/request_of_booking.php";
+function UrlCreator(key, value) {
+    this.url = String(key + "=" + value);
+}
 
-    /*if (first_choice == second_choice) {
-        window.confirm("Is not possible to reserve two seats for the same call");
-        return;
-    }*/
+UrlCreator.prototype.append = function (key, value) {
+    var string = String("&" + key + "=" + value);
+    this.url = this.url + string;
+}
+
+UrlCreator.prototype.getUrl = function() {
+    return this.url;
+}
+
+function reserveSeats() {
+
+    var page_url = "./model/booking_request.php";
+
+    var departure_address = getDepartureFormData();
+    var arrival_address = getArrivalFormData();
+    var departure_first = getDepartureRadio();
+    var arrival_first = getArrivalFormData();
+    var seats_number = $("#seats-number").val();
+
+    var url = new UrlCreator("dep_address", departure_address);
+    url.append("arr_address", arrival_address);
+    url.append("dep_exists", departure_first);
+    url.append("arr_exists", arrival_first);
+    url.append("seats_number", seats_number);
 
     //var post_data = $("#purchase-form").find("select").serialize();
     $.ajax({
         url: page_url,
-        //type: "post",
+        type: "post",
         data_type: "string",
-        //data: post_data,
+        data: url.getUrl(),
         success: function(response, status, xhr) {
             switch(response) {
                 case "err_1":
                     window.confirm("Error: DB returned an error")
                     break;
                 case "err_2":
-                    window.confirm("Error: is not possible to purchase a new skipass")
+                    window.confirm("Error: is not possible to booking the journey")
                     break;
                 case "err_3":
                     /* trigger the login form */
@@ -36,7 +55,7 @@ $("#purchase-button").click(function () {
                     window.confirm("Error: there is a problem with the session");
                     break;
                 case "ok":
-                    window.confirm("the skipass is purchased correctly!");
+                    window.confirm("seats reserved correctly!");
                     $(".modalclose").trigger("click");
                     $("#list-div").load("./model/user_home_page.php #list-div");
                     break;
@@ -48,9 +67,70 @@ $("#purchase-button").click(function () {
             window.confirm("Error: there is a network problem "+ error);
         }
     });
-});
+};
 
-$("#logout").click(function() {
+
+function getDepartureFormData() {
+    var departureForm = $("#departure-form");
+
+    var radio1 = departureForm.find("#departure-1");
+    var radio2 = departureForm.find("#departure-2");
+
+    if (radio1.is(":checked") && !radio2.is(":checked")) {
+        return departureForm.find("#departure-select option:selected").text();
+    } else if (!radio1.is(":checked") && radio2.is(":checked")) {
+        return departureForm.find("#departure-box").val();
+    } else {
+        // TODO error
+    }
+}
+
+function getArrivalFormData() {
+    var arrivalForm = $("#arrival-form");
+
+    var radio1 = arrivalForm.find("#arrival-1");
+    var radio2 = arrivalForm.find("#arrival-2");
+
+    if (radio1.is(":checked") && !radio2.is(":checked")) {
+        return arrivalForm.find("#arrival-select option:selected").text();
+    } else if (!radio1.is(":checked") && radio2.is(":checked")) {
+        return arrivalForm.find("#arrival-box").val();
+    } else {
+        // TODO error
+    }
+}
+
+function getArrivalRadio() {
+    var arrivalForm = $("#arrival-form");
+
+    var radio1 = arrivalForm.find("#arrival-1");
+    var radio2 = arrivalForm.find("#arrival-2");
+
+    if (radio1.is(":checked") && !radio2.is(":checked")) {
+        return true;
+    } else if (!radio1.is(":checked") && radio2.is(":checked")) {
+        return false;
+    } else {
+        // TODO error
+    }
+}
+
+function getDepartureRadio() {
+    var departureForm = $("#departure-form");
+
+    var radio1 = departureForm.find("#departure-1");
+    var radio2 = departureForm.find("#departure-2");
+
+    if (radio1.is(":checked") && !radio2.is(":checked")) {
+        return true;
+    } else if (!radio1.is(":checked") && radio2.is(":checked")) {
+        return false;
+    } else {
+        // TODO error
+    }
+}
+
+function logout() {
 
     var php_logout_page_url = "./model/logout.php";
     var index_page = "./index.php";
@@ -67,7 +147,7 @@ $("#logout").click(function() {
         }
     });
 
-});
+};
 
 $("#gift-btn").click(function () {
 
@@ -136,6 +216,10 @@ $("#gift-btn").click(function () {
 
 });
 
+function restoreOldValues2() {
+    // TODO DA IMPLEMENTARE
+}
+
 function show_box(box_name) {
     if (!$(box_name).is(":visible")) {
         $(box_name).show();
@@ -148,27 +232,28 @@ function hide_box(box_name) {
     }
 }
 
-/* restore the old value */
-function restore_old_value() {
+// /* restore the old value */
+// function restore_old_value() {
+//
+//     $("#login-form input[name=pwd]").get(0).setAttribute("type", "text");
+//
+//     var login_dom_obj = [];
+//
+//     var login_dom_obj = document.getElementById("log-input-box").getElementsByTagName("Input");
+//
+//     for (var i = 0; i < login_dom_obj.length; i++) {
+//         login_dom_obj[i].value = login_dom_obj[i].defaultValue;
+//     }
+//
+//    $("#delete-form input[name=bookID]").get(0).value = "";
+//
+//     hide_box("#delete-form .error-box");
+//     hide_box("#login-form .error-box");
+// }
 
-    $("#login-form input[name=pwd]").get(0).setAttribute("type", "text");
-
-    var login_dom_obj = [];
-
-    var login_dom_obj = document.getElementById("log-input-box").getElementsByTagName("Input");
-
-    for (var i = 0; i < login_dom_obj.length; i++) {
-        login_dom_obj[i].value = login_dom_obj[i].defaultValue;
-    }
-
-   $("#delete-form input[name=bookID]").get(0).value = "";
-
-    hide_box("#delete-form .error-box");
-    hide_box("#login-form .error-box");
-}
-$(".modalclose").click( function () {
-    restore_old_value();
-});
+// $(".modalclose").click( function () {
+//     restore_old_value();
+// });
 
 
 

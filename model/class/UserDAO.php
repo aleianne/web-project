@@ -7,6 +7,7 @@
  */
 
 require_once "Exceptions.php";
+require_once "User.php";
 
 class UserDAO {
 
@@ -35,7 +36,6 @@ class UserDAO {
     }
 
     public function readUser($username) {
-        // TODO CERCARE IL PROBLEMA
         $query1 = "SELECT email, password, salt, user_id FROM user WHERE email = '$username'";
 
         if ($query_result = $this->connection->query($query1)) {

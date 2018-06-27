@@ -88,33 +88,46 @@
                 <div id="departure-form">
                     <div class="input-group">
                         <span class="input-group-addon">
-                            <input id="departure-1" type="checkbox" aria-label="...">
+                            <input id="departure-1" type="radio" aria-label="...">
                         </span>
-                        <select class="form-control"></select>
+                        <select id="departure-select" class="form-control">
+                            <option>AA</option>
+                            <option>BB</option>
+                            <option>DD</option>
+                            <option>EE</option>
+                        </select>
                     </div>
                     <div class="input-group">
                         <span class="input-group-addon">
-                            <input id="departure-2" type="checkbox" aria-label="...">
+                            <input id="departure-2" type="radio" aria-label="...">
                         </span>
-                        <input type="text" class="form-control" aria-label="...">
+                        <input id="departure-box" type="text" class="form-control" aria-label="...">
                     </div>
                 </div>
                 <span class="label label-info">Arrival</span>
                 <div id="arrival-form">
                     <div class="input-group">
                         <span class="input-group-addon">
-                            <input id="arrival-1" type="checkbox" aria-label="...">
+                            <input id="arrival-1" type="radio" aria-label="...">
                         </span>
-                       <select class="form-control"></select>
+                       <select id="arrival-select" class="form-control">
+                           <option>AA</option>
+                           <option>BB</option>
+                           <option>DD</option>
+                           <option>EE</option>
+                       </select>
                     </div>
                     <div class="input-group">
                         <span class="input-group-addon">
-                            <input id="arrival-2" type="checkbox" aria-label="...">
+                            <input id="arrival-2" type="radio" aria-label="...">
                         </span>
-                        <input type="text" class="form-control" aria-label="...">
+                        <input id="arrival-box" type="text" class="form-control" aria-label="...">
                     </div>
                 </div>
-                <div id="purchase-button" class="submit-btn">
+                <div>
+                    <input id="seats-number" type="text" class="form-control" placeholder="seats number" aria-label="...">
+                </div>
+                <div id="reservation-button" class="submit-btn">
                     <a href="#">Purchase!</a>
                 </div>
             </form>
@@ -241,7 +254,7 @@
 <!-- Bootstrap Core JavaScript -->
 <script type="text/javascript"src="./js-library/bootstrap.min.js"></script>
 
-<script type="text/javascript" src="./js/client_request.js"></script>
+<script type="text/javascript" src="js/booking_manager.js"></script>
 
 <script type="text/javascript" src="./js/login.js"></script>
 
@@ -250,6 +263,40 @@
 <script type="text/javascript">
     $(document).ready(function() {
 
+        var departure_radio1 = $("#departure-1");
+        var departure_radio2 = $("#departure-2");
+        var arrival_radio1 = $("#arrival-1");
+        var arrival_radio2 = $("#arrival-2");
+
+        $("#reservation-button").click(function() {
+            reserveSeats();
+        });
+
+        $("#logout").click(function() {
+            logout();
+        });
+
+        departure_radio1.click(function() {
+            departure_radio1.prop("checked", true);
+            departure_radio2.prop("checked", false);
+        });
+
+        departure_radio2.click(function() {
+            departure_radio1.prop("checked", false);
+            departure_radio2.prop("checked", true);
+        })
+
+        arrival_radio1.click(function() {
+            arrival_radio1.prop("checked", true);
+            arrival_radio2.prop("checked", false);
+        })
+
+        arrival_radio2.click(function() {
+            arrival_radio1.prop("checked", false);
+            arrival_radio2.prop("checked", true);
+        })
+
+        $(".modalclose").click(restoreOldValues2());
     })
 </script>
 

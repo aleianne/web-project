@@ -15,11 +15,11 @@ class BookingDAO {
         $this->connection = $connection;
     }
 
-    public function createBooking($user) {
-        $query1 = "INSERT INTO booking(user_id) VALUES '$user'";
+    public function createBooking($user, $seats_number) {
+        $query1 = "INSERT INTO booking(user_id, seats_number) VALUES ('$user', '$seats_number')";
 
         if ($query_result = $this->connection->query($query1)) {
-            return $query_result->result_id;
+            return $this->connection->insert_id;
         } else {
             throw new DatabaseException("impossible to create a new booking record, database error");
         }
@@ -54,7 +54,7 @@ class BookingHasRouteDAO {
     public function createBookingHasRoute($booking_id, $route_id) {
         $query1 = "INSERT INTO booking_has_root(booking_id, route_id) VALUES ('$booking_id', '$route_id')";
 
-        if ($this->connection->query($query1)) {
+        if (!$this->connection->query($query1)) {
             throw new DatabaseException("impossible to insert a new record into booking_has_route_table, database_error");
         }
     }

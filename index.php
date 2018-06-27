@@ -307,6 +307,11 @@
             console.log("pasted");
         });
 
+
+        $(".modalclose").click( function () {
+            restoreOldValues();
+        });
+
 //        loginFormElement.find("input[name='email']").focus(function() {
 //            var element = $(this);
 //

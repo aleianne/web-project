@@ -36,10 +36,6 @@ function restoreOldValues() {
     $(".error-box").hide();
 }
 
-$(".modalclose").click( function () {
-    restoreOldValues();
-});
-
 
 function showBox(boxElement) {
     if (!boxElement.is(":visible"))

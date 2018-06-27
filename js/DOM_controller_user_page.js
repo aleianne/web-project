@@ -34,8 +34,8 @@ $(document).ready(function() {
 /* use the leanModal library to popup the login or reg form */
 $("a[rel*=leanModal]").leanModal({top : 150, overlay : 0.6, closeButton: ".modalclose" });
 
-/* change the type of the input */
-$("#login-form input[name=pwd]").focus(function () {
-    this.setAttribute("type", "Password");
-    this.value = "";
-});
+// /* change the type of the input */
+// $("#login-form input[name=pwd]").focus(function () {
+//     this.setAttribute("type", "Password");
+//     this.value = "";
+// });

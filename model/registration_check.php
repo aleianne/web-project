@@ -7,7 +7,7 @@
  */
 
     /* php script to check the login info sent by the client */
-    include "Registration.php";
+    include "./class/Registration.php";
     include "http_control.php";
     require_once "db_request.php";
     require_once "Exceptions.php";

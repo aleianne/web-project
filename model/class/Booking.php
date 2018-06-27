@@ -11,7 +11,8 @@ define("max_seats", 4);
 require_once "Exceptions.php";
 require_once "RouteDAO.php";
 require_once "Route.php";
-include "BookingDAO.php";
+require_once "UserDAO.php";
+require_once "BookingDAO.php";
 
 class Booking
 {
@@ -101,39 +102,37 @@ class Booking
 
         $result = $route_dao->queryRoute($this->departure_address, $this->arrival_address);
 
+        if ($result->count() == 0) {
+            throw new InternalServerError("the query return 0 value");
+        }
+
         // iterate all over the seats booked in the correspondent route
         $i = $result->getIterator();
-        $booked_seats = 0;
 
         while($i->valid()){
-            $booked_seats = $i->current();
-            if ($booked_seats + $seats_number > max_seats) {
+            $route = $i->current();
+            if ($route->getBookedSeats() + $seats_number > max_seats) {
                 throw new SeatsNotAvailableExcpetions("seats not available for the journey");
             }
             $i->next();
         }
 
         // update the route table
-        $result = $route_dao->updateRoute($this->departure_address, $this->arrival_address, $seats_number);
-
-        if ($result->count() == 0)
-            throw new Exception("impossible to update the route table ");
-
-
-        //TODO update the user_has_booking table
+        $route_dao->updateRoute($this->departure_address, $this->arrival_address, $seats_number);
 
         // create a new booking row
         $booking_dao = new BookingDAO($this->connection);
         $booking_has_route = new BookingHasRouteDAO($this->connection);
 
         $this->getUserId();
-        $booking_id = $booking_dao->createBooking($this->user_id);
+        $booking_id = $booking_dao->createBooking($this->user_id, $seats_number);
 
         // iterate over all the route id in order to insert a new record into the
-        $i = $result->getIterator();
-        while($i->valid()) {
-            $booking_has_route->createBookingHasRoute($booking_id, $i->current());
-            $i->next();
+        $j = $result->getIterator();
+        while($j->valid()) {
+            $route = $j->current();
+            $booking_has_route->createBookingHasRoute($booking_id, $route->getRouteId());
+            $j->next();
         }
 
         return $booking_id;
@@ -147,23 +146,20 @@ class Booking
 
        $result = $route_dao->queryRoute($this->departure_address, $this->arrival_address);
 
+       if ($result->count() == 0) {
+           throw new InternalServerError();
+       }
+
        $i = $result->getIterator();
-       $booked_seats = 0;
 
        while($i->valid()) {
-           $booked_seats = $i->current();
-           if ($booked_seats + $seats_number > max_seats)
+           $route = $i->current();
+           if ($route->getBookedSeats() + $seats_number > max_seats)
                throw new SeatsNotAvailableExcpetions("seats not available for the journey");
            $i->next();
        }
 
-       $result = $route_dao->updateRoute($this->departure_address, $this->arrival_address, $seats_number);
-
-       // TODO insert a new route into the table
-
-       if ($result->count() == 0) {
-           throw new Exception();
-       }
+       $route_dao->updateRoute($this->departure_address, $this->arrival_address, $seats_number);
 
         // select the route to be updated and retourne the route objecr
         //$route_object = $route_dao->readRoute2($this->arrival_address);
@@ -183,10 +179,11 @@ class Booking
        $booking_id = $booking_table->createBooking($this->user_id);
 
         // iterate over all the route id in order to insert a new record into the
-        $i = $result->getIterator();
-        while($i->valid()) {
-            $booking_has_route->createBookingHasRoute($booking_id, $i->current());
-            $i->next();
+        $j = $result->getIterator();
+        while($j->valid()) {
+            $route = $j->current();
+            $booking_has_route->createBookingHasRoute($booking_id, $route->getRouteId());
+            $j->next();
         }
 
         return $booking_id;
@@ -200,31 +197,30 @@ class Booking
 
         $result = $route_dao->readRoute();
 
+        if ($result->count() == 0) {
+            throw new InternalServerError();
+        }
+
         $i = $result->getIterator();
-        $booked_seats = 0;
 
         while($i->valid()) {
-            $booked_seats = $i->current();
-            if ($booked_seats + $seats_number > max_seats)
+            $route = $i->current();
+            if ($route->getBookedSeats() + $seats_number > max_seats)
                 throw new SeatsNotAvailableExcpetions("seats not available for the journey");
             $i->next();
         }
 
-        $result = $route_dao->updateRoute($this->departure_address, $this->arrival_address, $seats_number);
+        $route_dao->updateRoute($this->departure_address, $this->arrival_address, $seats_number);
 
-        if ($result->count() == 0) {
-            throw new Exception();
-        }
-
-        // select the route to be updated and retourne the route objecr
+        // select the route to be updated
         $route_object = $route_dao->readRoute2($this->departure_address);
 
         //update the route row with a new arrival for the end of the route
         $route_dao->updateRoute2($this->departure_address);
 
         // create a new route record into the table and than add it to the array
-        $route_id = $route_dao->createRoute($this->departure_address, $route_object->getArrivalAddress(), $route_object->getBookedSeats() + $seats_number);
-        $result.append($route_id);
+        $route= $route_dao->createRoute($this->departure_address, $route_object->getArrivalAddress(), $route_object->getBookedSeats() + $seats_number);
+        $result->append($route);
 
         //create a new travel booking
         $booking_table = new BookingDAO($this->connection);
@@ -233,11 +229,12 @@ class Booking
         $this->getUserId();
         $booking_id = $booking_table->createBooking($this->user_id);
 
-        // iterate over all the route id in order to insert a new record into the
-        $i = $result->getIterator();
-        while($i->valid()) {
-            $booking_has_route->createBookingHasRoute($booking_id, $i->current());
-            $i->next();
+        // iterate over all the route id in order to insert a new record into the table
+        $j = $result->getIterator();
+        while($j->valid()) {
+            $route = $j->current();
+            $booking_has_route->createBookingHasRoute($booking_id, $i->getRouteId());
+            $j->next();
         }
 
         return $booking_id;
@@ -281,7 +278,9 @@ class Booking
 
         // get the user id from the user table
         $user_dao = new UserDAO($this->connection);
-        $this->user_id = $user_dao->readUser($this->suern);
+        // TODO da cambiare un volta testato tutto
+        $user = $user_dao->readUser("ale@gmail.it");
+        $this->user_id = $user->getUserId();
         return $this->user_id;
     }
 
