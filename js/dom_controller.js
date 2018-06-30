@@ -36,6 +36,38 @@ function restoreOldValues() {
     $(".error-box").hide();
 }
 
+function addOptionToSelect(departureSelect, arrivalSelect) {
+
+    var page_url = "./model/retrieve_route.php";
+
+    $.ajax({
+        url: page_url,
+        type: "post",
+        dataType: "json",
+        success: function (response, status, xhr) {
+
+            console.log(response);
+
+            $.each(response, function (i, item) {
+                departureSelect.append($('<option>', {
+                    value: i,
+                    text: item
+                }));
+            });
+
+            $.each(response, function (i, item) {
+                arrivalSelect.append($('<option>', {
+                    value: i,
+                    text: item
+                }));
+            });
+        },
+        error: function (xhr, status, err) {
+            window.alert("error");
+        }
+    });
+}
+
 
 function showBox(boxElement) {
     if (!boxElement.is(":visible"))

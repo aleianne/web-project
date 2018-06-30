@@ -71,7 +71,7 @@ Password.prototype.eq =  function (pwd) {
 function loginSubmit() {
 
     const loginCheckPageUrl = "./model/login_check.php";
-    const nextPageUrl = "./user_home_page.php";
+    const nextPageUrl = "./home.php";
     const errorClassName = "error-effect";
 
     var loginFormElement = $("#login-form");
@@ -140,7 +140,7 @@ function loginSubmit() {
                     break;
                 case "err_3":
                     showBox(loginFormErrorBox);
-                    loginFormErrorBox.html("Error: Password is no correct");
+                    loginFormErrorBox.html("Error: incorrect password");
                     break;
                 case "err_4":
                     /* generic database error */
@@ -162,7 +162,7 @@ function loginSubmit() {
 
         },
         error: function (xhr, status, err) {
-            showBox(errorBoxElement);
+            showBox(loginFormErrorBox);
             var err_string;
 
             if (typeof(err) != undefined)
@@ -172,20 +172,6 @@ function loginSubmit() {
         }
     });
 }
-
-// /* check if the form field are empty or not */
-// function check_form_field(form_name) {
-//     var dom_obj = [];
-//     var index;
-//
-//     dom_obj = document.getElementById(form_name).getElementsByTagName("Input");
-//     for (index in dom_obj) {
-//         if (dom_obj[index].value === "") {
-//             return true;
-//         }
-//     }
-//     return false;
-// }
 
 
 

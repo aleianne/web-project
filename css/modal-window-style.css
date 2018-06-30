@@ -39,7 +39,7 @@ div.list-div {
     margin: 0 auto;
 }
 
-.popup-container input[type="text"], .popup-container input[type="password"] {
+.popup-container input[type="text"], .popup-container input[type="password"] ,  .popup-container select {
     padding: 7px 10px;
     margin: auto;
     width: 96%;
@@ -111,6 +111,10 @@ div.list-div {
     text-decoration: none;
 }
 
+.elements-group {
+    margin: auto;
+    display: block;
+}
 
 .submit-btn {
     padding: 7px 5px;
@@ -122,6 +126,11 @@ div.list-div {
     border: none;
     text-align: center;
     background-color: #5bc0de;
+}
+
+.input-group-purchase {
+    margin-top: 12px;
+    display: block;
 }
 
 #password-strength-box {

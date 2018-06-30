@@ -12,7 +12,7 @@
 class Route {
 
     private $routeId;
-    private $departure_adddress;
+    private $departure_address;
     private $arrival_address;
     private $booked_seats;
 
@@ -26,7 +26,7 @@ class Route {
     public function __construct($routeId, $departure_adddress, $arrival_address, $booked_seats)
     {
         $this->routeId = $routeId;
-        $this->departure_adddress = $departure_adddress;
+        $this->departure_address = $departure_adddress;
         $this->arrival_address = $arrival_address;
         $this->booked_seats = $booked_seats;
     }
@@ -50,17 +50,17 @@ class Route {
     /**
      * @return mixed
      */
-    public function getDepartureAdddress()
+    public function getDepartureAddress()
     {
-        return $this->departure_adddress;
+        return $this->departure_address;
     }
 
     /**
-     * @param mixed $departure_adddress
+     * @param mixed $departure_address
      */
-    public function setDepartureAdddress($departure_adddress)
+    public function setDepartureAddress($departure_address)
     {
-        $this->departure_adddress = $departure_adddress;
+        $this->departure_address = $departure_address;
     }
 
     /**

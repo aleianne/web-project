@@ -6,39 +6,39 @@
  * Time: 18.35
  */
 
-    require_once "db_request.php";
-    require_once "http_control.php";
-    require_once "Exceptions.php";
+    require_once "./db_request.php";
+    require_once "./http_control.php";
+    require_once "./class/Exceptions.php";
     require_once "./class/Booking.php";
 
     $server_response = [
-      'db_error'=>'err_1',
-      'forbidden'=>'err_2',
-      'time_err'=>'err_3',
-      'session_error'=>'err_4',
-      'server_error'=>'err_5',
-      'par_for_err'=>'err_6',
+        'db_error'=>'err_1',
+        'forbidden'=>'err_2',
+        'time_err'=>'err_3',
+        'session_error'=>'err_4',
+        'server_error'=>'err_5',
+        'par_for_err'=>'err_6',
         'par_err'=>'err_7',
-      'purchased'=>'ok'
+        'address_err'=>'err_8',
+        'purchased'=>'ok'
     ];
 
 
-    // TODO gestire le sessioni dopo
     /* start a session */
-    //session_start();
+    session_start();
 
-//    if (isset($_SESSION)) {
-//        $user = $_SESSION['user'];
-//
-//        if(is_inactive()) {
-//            die($server_response['time_err']);
-//        }
-//
-//    } else {
-//        die($server_response['session_error']);
-//    }
+    if (isset($_SESSION)) {
+        $user = $_SESSION['s239846_user'];
 
-//    set_time_session();
+        if(is_inactive()) {
+            die($server_response['time_err']);
+        }
+
+    } else {
+        die($server_response['session_error']);
+    }
+
+    set_time_session();
 
     switch ($_SERVER['REQUEST_METHOD']) {
         case 'GET':
@@ -75,14 +75,33 @@
     }
 
     // sanitize the input value
-    $departure = strip_tags($departure);
-    $arrival = strip_tags($arrival);
+    $departure = strtolower(strip_tags($departure));
+    $arrival = strtolower(strip_tags($arrival));
     $seats_number = strip_tags($seats_number);
 
+    if (strcmp($departure, $arrival) == 1) {
+        die($server_response["address_err"]);
+    }
+
+    if ($arrival_exists === "true") {
+        $arrival_exists = true;
+    } else if ($arrival_exists === "false") {
+        $arrival_exists = false;
+    } else {
+        die($server_response["par_for_err"]);
+    }
+
+    if ($departure_exists === "true") {
+        $departure_exists = true;
+    } else if ($departure_exists === "false") {
+        $departure_exists = false;
+    } else {
+        die($server_response["par_for_err"]);
+    }
 
     // check if the value passed is a number
     if (is_numeric($seats_number)) {
-        if (!is_num($seats_number)) {
+        if (!is_int($seats_number)) {
             $seats_number = strval($seats_number);
         }
     } else {
@@ -105,10 +124,10 @@
 
     try {
         // strip all the parameter passed by the client and make lower case
-        $stripped_departure = strtolower($mysql_conn->real_escape_string($departure));
-        $stripped_arrival = strtolower($mysql_conn->real_escape_string($arrival));
+        $stripped_departure = $mysql_conn->real_escape_string($departure);
+        $stripped_arrival = $mysql_conn->real_escape_string($arrival);
 
-        $booking = new Booking($mysql_conn, $stripped_departure, $stripped_arrival);
+        $booking = new Booking($mysql_conn, $stripped_departure, $stripped_arrival, $user);
 
         // start a new transaction
         $mysql_conn->begin_transaction();
@@ -140,6 +159,10 @@
         $mysql_conn->close();
         die($server_response["forbidden"]);
     } catch (InternalServerError $ise) {
+        $mysql_conn->rollback();
+        $mysql_conn->close();
+        die($server_response["server_error"]);
+    } catch (RecordNotFoundException $rnf) {
         $mysql_conn->rollback();
         $mysql_conn->close();
         die($server_response["server_error"]);

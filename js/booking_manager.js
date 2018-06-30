@@ -2,7 +2,6 @@
  * Created by utente pc on 24/08/2017.
  */
 
-
 function UrlCreator(key, value) {
     this.url = String(key + "=" + value);
 }
@@ -10,20 +9,27 @@ function UrlCreator(key, value) {
 UrlCreator.prototype.append = function (key, value) {
     var string = String("&" + key + "=" + value);
     this.url = this.url + string;
-}
+};
 
 UrlCreator.prototype.getUrl = function() {
     return this.url;
-}
+};
 
-function reserveSeats() {
+
+/*
+    this function is used to reserve seats on the minibus
+ */
+function reserveSeats(departureForm, arrivalForm) {
 
     var page_url = "./model/booking_request.php";
 
-    var departure_address = getDepartureFormData();
-    var arrival_address = getArrivalFormData();
-    var departure_first = getDepartureRadio();
-    var arrival_first = getArrivalFormData();
+    // var arrivalForm = $("#arrival-form");
+    // var departureForm = $("#departure-form");
+
+    var departure_address = getDepartureFormData(departureForm);
+    var arrival_address = getArrivalFormData(arrivalForm);
+    var departure_first = getDepartureRadio(departureForm);
+    var arrival_first = getArrivalRadio(arrivalForm);
     var seats_number = $("#seats-number").val();
 
     var url = new UrlCreator("dep_address", departure_address);
@@ -32,13 +38,20 @@ function reserveSeats() {
     url.append("arr_exists", arrival_first);
     url.append("seats_number", seats_number);
 
-    //var post_data = $("#purchase-form").find("select").serialize();
     $.ajax({
         url: page_url,
         type: "post",
         data_type: "string",
         data: url.getUrl(),
         success: function(response, status, xhr) {
+
+            if (!isNaN(response)) {
+                window.confirm("booking id: " + response);
+                $(".modalclose").trigger("click");
+                $("#list-div").load("./home.php #list-div");
+                return;
+            }
+
             switch(response) {
                 case "err_1":
                     window.confirm("Error: DB returned an error")
@@ -54,13 +67,22 @@ function reserveSeats() {
                 case "err_4":
                     window.confirm("Error: there is a problem with the session");
                     break;
-                case "ok":
-                    window.confirm("seats reserved correctly!");
-                    $(".modalclose").trigger("click");
-                    $("#list-div").load("./model/user_home_page.php #list-div");
+                case "err_5":
+                    // TODO da sistemare
+                    window.confirm("server error");
+                    break;
+                case "err_6":
+                    window.confirm("wrong parameter format");
+                    break;
+                case "err_7":
+                    window.confirm("wrong parameter");
+                    break;
+                case "err_8":
+                    window.confirm("address are in reverse order");
                     break;
                 default:
-                    //
+                    window.confirm("error unknown");
+                    break;
             }
         },
         error: function(xhr, status, error) {
@@ -70,9 +92,7 @@ function reserveSeats() {
 };
 
 
-function getDepartureFormData() {
-    var departureForm = $("#departure-form");
-
+function getDepartureFormData(departureForm) {
     var radio1 = departureForm.find("#departure-1");
     var radio2 = departureForm.find("#departure-2");
 
@@ -85,9 +105,7 @@ function getDepartureFormData() {
     }
 }
 
-function getArrivalFormData() {
-    var arrivalForm = $("#arrival-form");
-
+function getArrivalFormData(arrivalForm) {
     var radio1 = arrivalForm.find("#arrival-1");
     var radio2 = arrivalForm.find("#arrival-2");
 
@@ -100,9 +118,7 @@ function getArrivalFormData() {
     }
 }
 
-function getArrivalRadio() {
-    var arrivalForm = $("#arrival-form");
-
+function getArrivalRadio(arrivalForm) {
     var radio1 = arrivalForm.find("#arrival-1");
     var radio2 = arrivalForm.find("#arrival-2");
 
@@ -115,9 +131,7 @@ function getArrivalRadio() {
     }
 }
 
-function getDepartureRadio() {
-    var departureForm = $("#departure-form");
-
+function getDepartureRadio(departureForm) {
     var radio1 = departureForm.find("#departure-1");
     var radio2 = departureForm.find("#departure-2");
 
@@ -131,7 +145,6 @@ function getDepartureRadio() {
 }
 
 function logout() {
-
     var php_logout_page_url = "./model/logout.php";
     var index_page = "./index.php";
 
@@ -149,38 +162,32 @@ function logout() {
 
 };
 
-$("#gift-btn").click(function () {
+function submitDeletion(booking_id) {
 
-    var username = $("#gift-form input[name=username]").get(0).value;
-    var delete_page_url = "./model/delete_a_booking.php";
+    var delete_page_url = "./model/delete_booking.php";
+    var booking_string = "booking_id=" + booking_id;
 
-   /* if (parseInt(value) !== parseInt(value, 10)) {
-        showBox("#delete-form .error-box");
-        $("#delete-form .error-box").html("Error: the value insert is not valid");
+    var r = confirm("You want to delete?");
+    if (r === false) {
         return;
-    } */
-
-    var booking_code = $("#delete-form").serialize();
+    }
 
     $.ajax({
         url: delete_page_url,
         type: "post",
-        data: booking_code,
+        data: booking_string,
         data_type: "string",
         success: function (response, status, xhr) {
 
             switch (response) {
                 case "err_1":
-                    show_box("#delete-form .error-box");
-                    $("#gift-form .error-box").html("Error: DB returned an error");
+                    window.alert("Error: DB returned an error");
                     break;
                 case "err_2":
-                    show_box("#delete-form .error-box");
-                    $("#gift-form .error-box").html("Error: the parameter are wrong");
+                    window.alert("Error: the parameter are wrong");
                     break;
                 case "err_3":
                     show_box("#delete-form .error-box");
-                    $("#gift-form .error-box").html("Error: the booking ID doesn't exist");
                     break;
                 case "err_4":
                     /* trigger the login form */
@@ -188,49 +195,39 @@ $("#gift-btn").click(function () {
                     $("#login-trigger").trigger("click");
                     break;
                 case "err_5":
-                    show_box("#delete-form .error-box");
-                    $("#gift-form .error-box").html("Error: session error");
+                    window.alert("Error: session error");
+                    break;
+                case "err_6":
+                    window.alert("Error: non valid delete");
                     break;
                 case "ok":
-                    hide_box("#gift-form .error-box");
                     window.confirm("Booking deleted");
                     $(".modalclose").trigger("click");
-                    $("#list-div").load("../model/user_home_page.php #list-div");
+                    $("#list-div").load("../home.php #list-div");
                     break;
                 default:
+                    window.alert("unknown message returned by the server");
                     break;
             }
 
         },
         error: function (xhr, status, err) {
-            show_box("#delete-form .error-box");
             var err_string;
 
             if (typeof(err) != undefined) {
                 err_string = status + " " + err;
             }
-            $("#delete-form-form .error-box").html("Error: " + err_string );
+            window.alert("impossible to send data " + err_string);
             return;
         }
     })
 
-});
+};
 
 function restoreOldValues2() {
     // TODO DA IMPLEMENTARE
 }
 
-function show_box(box_name) {
-    if (!$(box_name).is(":visible")) {
-        $(box_name).show();
-    }
-}
-
-function hide_box(box_name) {
-    if (!$(box_name).is(":hidden")) {
-        $(box_name).hide();
-    }
-}
 
 // /* restore the old value */
 // function restore_old_value() {

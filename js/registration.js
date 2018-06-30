@@ -7,7 +7,7 @@ const green = "Password: strong";
 const err = "Error!";
 
 const registrationPage = "./model/registration_check.php";
-const nextPage = "./user_home_page.php";
+const nextPage = "./home.php";
 
 function Registration(user, secondPassword) {
     this.user = user;

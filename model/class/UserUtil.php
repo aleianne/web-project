@@ -22,7 +22,6 @@ class UserUtil {
             else
                 $string_pwd = $password;
 
-
             if (!is_string($salt))
                 $string_salt = (string)$salt;
             else

@@ -1,3 +1,12 @@
+<?php
+    if(empty($_SERVER['HTTPS']) || $_SERVER['HTTPS'] == "off"){
+        $redirect = 'https://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
+        header('HTTP/1.1 301 Moved Permanently');
+        header('Location: ' . $redirect);
+        exit();
+    }
+?>
+
 <!DOCTYPE html>
 <html lang="en" xmlns="http://www.w3.org/1999/html">
 
@@ -9,7 +18,7 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>Exam prenotation system</title>
+    <title>Minibus reservation system</title>
 
 <!--    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"-->
 <!--          integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">-->
@@ -145,13 +154,34 @@
     <!-- Page Content -->
     <div id="page-content-wrapper">
 
-        <!-- #toolbar -->
-        <div id="titlebar">
-            <div id="first-col"><img src="./images/icons8-Menu-48.png" id="sidebar-icon"></div>
-            <div id="title">Exam call booking</div>
-            <div id="third-col"></div>
+<!--        <!-- #toolbar -->
+<!--        <div id="titlebar">-->
+<!--            <div id="first-col"><img src="./images/icons8-Menu-48.png" id="sidebar-icon"></div>-->
+<!--            <div id="title">Exam call booking</div>-->
+<!--            <div id="third-col"></div>-->
+<!--        </div>-->
+<!--        <!-- #toolbar-wrapper -->
+
+<!---->
+<!--        <nav class="navbar navbar-default titlebar">-->
+<!--            <div class="container-fluid">-->
+<!--                <div class="navbar-header">-->
+<!--                    <a class="glyphicon glyphicon-menu-hamburger" id="menu-link"></a>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--        </nav>-->
+
+       <nav class="navbar navbar-default titlebar" style="border: none">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                    <button type="button" class="btn btn-default btn-lg" id="menu-link">
+                        <span class="glyphicon glyphicon-menu-hamburger" aria-hidden="true"></span> Menu
+                    </button>
+                </div>
+            </div>
         </div>
-        <!-- #toolbar-wrapper -->
+        </nav>
 
 <!--        <nav class="navbar navbar-default">-->
 <!--            <div class="container-fluid">-->
@@ -178,62 +208,99 @@
             <!-- #sencond row: list the data retrieved from the server -->
             <div class="row">
                 <div class="col-lg-12">
-                    <h1>Students registered</h1>
-                    <div>
-                        <!--                            --><?php
-                        //                                include("./model/db_request.php");
-                        //                                define ("tot_num_call", 3);
-                        //
-                        //                                /* query the database to retrive the list of username*/
-                        //                                try {
-                        //                                    $mysql_conn = new mysqli(db_host,db_user, db_pwd, db_name);
-                        //
-                        //                                    if ($mysql_conn->connect_errno) {
-                        //                                        echo "errore nella connessione";
-                        //                                        throw new Exception("Problem during the db connection");
-                        //                                    }
-                        //
-                        //                                    $total_booked = 0;
-                        //
-                        //                                    for ($i = 1; $i <= tot_num_call ; $i++) {
-                        //
-                        //                                        $list = request_list($mysql_conn, $i);
-                        //                                        if (empty($list)) {
-                        //                                            /* div with no data */
-                        //                                            echo "<div class='panel panel-default'>";
-                        //                                            echo "<div class='panel-heading'><h3>call n°".$i."</h3></div>";
-                        //                                            echo "<div class='panel-body'><p>no seats booked for this call</p></div>";
-                        //                                            echo "</div>";
-                        //                                            continue;
-                        //                                        }
-                        //
-                        //                                        echo "<div class='panel panel-default' style='margin 10px;'>";
-                        //                                        echo "<div class='panel-heading'><h3>call n°".$i."</h3></div>";
-                        //                                        echo "<div class='panel-body'>";
-                        //                                        $j = 0;
-                        //                                        foreach($list as $value) {
-                        //                                            $j++;
-                        //                                            echo "<p>".$j."   ".$value."</p><br>";
-                        //                                        }
-                        //
-                        //                                        $call_booked = sizeof($list);
-                        //
-                        //                                        echo "<p class='string1'>Number of students for this call: ".$call_booked."</p>";
-                        //                                        echo "</div>";
-                        //                                        echo "</div>";
-                        //
-                        //                                        $total_booked +=  $call_booked;
-                        //                                    }
-                        //
-                        //                                    echo "<h2>Total number of students: ".$total_booked."</h2>";
-                        //
-                        //                                    $mysql_conn->close();
-                        //
-                        //                                } catch (Exception $e) {
-                        //                                    $mysql_conn->close();
-                        //                                    echo "$e.message";
-                        //                                }
-                        //                            ?>
+                    <!-- TODO AGGIUNGERE spazion nello span-->
+                    <span></span>
+                    <div id="table-div">
+
+                    <?php
+                        require_once "model/db_request.php";
+                        require_once "model/class/Exceptions.php";
+                        require_once "model/class/Route.php";
+                        require_once "model/class/ShowBooking.php";
+                        require_once "model/http_control.php";
+
+                    //  ini_set('display_errors', 'On');
+                    //  error_reporting(E_ALL);
+                        error_reporting(E_ERROR | E_PARSE);
+
+                        session_start();
+
+                        $mysql_conn = new mysqli(db_host,db_user, db_pwd, db_name);
+
+                        if ($mysql_conn->connect_errno) {
+                            echo "<div class='panel panel-default'>";
+                            echo "<div class='panel-heading'><h3>Database error</h3></div>";
+                            echo "<div class='panel-body'><p> database error: ".$mysql_conn->connect_errno."</p></div>";
+                            echo "</div>";
+                        } else {
+                            /* query the database to retrive the list of username*/
+                            try {
+
+                                $show_booking = new ShowBooking($mysql_conn);
+                                $result_array = $show_booking->showAllRoutes();
+
+                                if ($result_array->count() == 0) {
+                                    /* div with no data */
+                                    echo "<div class='panel panel-default'>";
+                                    echo "<div class='panel-heading'><h3>Minibus Routes</h3></div>";
+                                    echo "<div class='panel-body'><p>Minibus has no routes booked</p></div>";
+                                    echo "</div>";
+                                } else {
+                                    $i = $result_array->getIterator();
+                                    $counter = 0;
+
+//                                echo "<div class='panel panel-default' style='margin 10px;'>";
+//                                echo "<div class='panel-heading'><h3>Minibus routes</h3></div>";
+//                                echo "<div class='panel-body'>";
+
+                                    echo "<div class='panel panel-default'>";
+                                    echo "<div class='panel-heading'><b>Minibus routes<b><span class='pull-right glyphicon glyphicon-repeat' aria-hidden='true'></span></div>";
+                                    echo "<table class='table'>";
+
+                                    echo "<tr class='row-style'>";
+                                    echo "<td>#</td>";
+                                    echo "<td>Departure address</td>";
+                                    echo "<td>Arrival address</td>";
+                                    echo "<td>Booked seats</td>";
+                                    echo "</tr>";
+
+                                    while ($i->valid()) {
+                                        $counter++;
+                                        $begin_address = $i->current()->getDepartureAddress();
+                                        $end_address = $i->current()->getArrivalAddress();
+                                        $booked_seats = $i->current()->getBookedSeats();
+
+                                        // print the table row into the screen
+                                        echo "<tr>";
+                                        echo "<td>".$counter."</td>";
+                                        echo "<td>".$begin_address."</td>";
+                                        echo "<td>".$end_address."</td>";
+                                        echo "<td>".$booked_seats."</td>";
+                                        echo "</tr>";
+
+                                        $i->next();
+                                    }
+
+                                    echo "</table>";
+                                    echo "</div>";
+                                    echo "</div>";
+                                }
+
+
+
+                            } catch (DatabaseException $dbe) {
+                                echo "<div class='panel panel-default'>";
+                                echo "<div class='panel-heading'><h3>Database error</h3></div>";
+                                echo "<div class='panel-body'></p></div>";
+                                echo "</div>";
+                            }
+
+                            // close the connection
+                            $mysql_conn->close();
+                        }
+
+                        ?>
+
                     </div>
                 </div>
             </div>
@@ -263,7 +330,7 @@
 <!--        crossorigin="anonymous"></script>-->
 
 <!-- DOM object controller -->
-<script type="text/javascript" src="./js/domController.js"></script>
+<script type="text/javascript" src="js/dom_controller.js"></script>
 
 <!-- login controller script  -->
 <script type="text/javascript" src="./js/login.js"></script>
@@ -308,36 +375,12 @@
         });
 
 
-        $(".modalclose").click( function () {
+        $(".modalclose").click( function() {
             restoreOldValues();
         });
 
-//        loginFormElement.find("input[name='email']").focus(function() {
-//            var element = $(this);
-//
-//            if(element.hasClass("error-input-style"))
-//                element.removeClass("error-input-style");
-//        });
-
-//        /* change the type of the input */
-//        loginFormElement.find("input[name='password']").focus(function () {
-//            this.setAttribute("type", "Password");
-//            this.value = "";
-//        });
-//
-//        registrationFormElement.find("input[name='first-password']").focus(function () {
-//            this.setAttribute("type", "Password");
-//            this.value = "";
-//        });
-//
-//        registrationFormElement.find("input[name='second-password']").focus(function () {
-//            this.setAttribute("type", "Password");
-//            this.value = "";
-//        });
-
-
         /* button for toggling the sidebar*/
-        $("img#sidebar-icon").click(function (e) {
+        $("#menu-link").click(function (e) {
             e.preventDefault();
             $("#wrapper").toggleClass("toggled");
         });

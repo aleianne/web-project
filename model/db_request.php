@@ -3,8 +3,7 @@
     // define the main constant variable for accessing the database
     define ("db_user", "s239846");
     define ("db_host", "localhost");
-    //define ("db_port", 3306);
-    define ("db_name", "s239836");
+    define ("db_name", "s239846");
     define ("db_pwd", "lemlogys");
 //
 //    // define the max number of seats into the minibus

@@ -10,12 +10,13 @@
 require_once "UserDAO.php";
 require_once "UserUtil.php";
 require_once "User.php";
+require_once "Exceptions.php";
 
 class Registration {
 
     private $username;
     private $password;
-    private $emailPattern = "";
+    private $emailPattern = "/^(([^<>()\[\]\\.,;:\s@\"]+(\.[^<>()\[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/";
 
     /**
      * @return mixed
@@ -72,9 +73,9 @@ class Registration {
 
         // check if the email is valid
         // TODO fare il check della mail
-        /*if (preg_match($this->emailPattern, $escaped_username) == 0) {
+        if (preg_match($this->emailPattern, $escaped_username) == 0) {
             return false;
-        }*/
+        }
 
         /* generate new salt */
         $salt = uniqid(mt_rand(), true);
@@ -91,52 +92,12 @@ class Registration {
 
     public function checkUserIntoDatabase($connection) {
         $user_dao = new userDAO($connection);
-
-        $escaped_username = $connection->real_escape_string($this->username);
-
-        return $user_dao->readUser($escaped_username);
-    }
-
-
-
-    /*public function getUsername(){
-        return $this->email;
-    }
-
-    public function getName() {
-        return $this->name;
-    }
-
-    public function getHash_pwd() {
-        if (empty($this->hash_pwd)) {
-            throw new Exception("the Password is not hashed", 1);
-        } else {
-            return $this->hash_pwd;
+        try {
+            $escaped_username = $connection->real_escape_string($this->username);
+            $user_dao->readUser($escaped_username);
+        } catch (RecordNotFoundException $rne) {
+            return false;
         }
+        return true;
     }
-
-    public function Hash_pwd($salt) {
-        if (!empty($this->pwd) && !empty($salt)){
-
-            // convert the data passed in string
-            if (!is_string($this->pwd)) {
-                $string_pwd = (string) $this->pwd;
-            } else {
-                $string_pwd = $this->pwd;
-            }
-
-            if(!is_string($salt)) {
-                $string_salt = (string) $salt;
-            } else {
-                $string_salt = $salt;
-            }
-
-            // concatenate the string and the salt to obtain the hashed Password
-            $subject_string = $string_pwd.$string_salt;
-            return $this->hash_pwd = hash(registration::hash_alg, $subject_string);
-
-        } else {
-            throw new Exception("Password or salt empty", 1);
-        }
-    }*/
 }

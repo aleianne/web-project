@@ -6,25 +6,13 @@
  * Time: 17.33
  */
 
+// todo DA CAMBIARE
 define ("minute_2", 120);
-
-/* use this function to check if the request is with HTTPS or HTTP  and redirect in case of simple HTTP */
-function https_check() {
-    if (!empty($_SERVER["HTTPS"]) && $_SERVER["HTTPS"] == "off"){
-
-    } else {
-        // redirection to https
-        $redirect = "https://".$_SERVER["HTTP_HOST"].$_SERVER["REQUEST_URI"];
-        header("HTTP/1.1 301 Moved permanently");
-        header("Location: ".$redirect);
-        exit;
-    }
-};
 
 /* use this function to initialize a session for the server */
 function session_setup($username) {
     /* setup the session with the session parameters */
-    $_SESSION["user"] = $username;
+    $_SESSION["s239846_user"] = $username;
     $_SESSION["last_activity_time"] = time();
 
     /* send the cookies to the client */

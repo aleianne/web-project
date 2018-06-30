@@ -7,8 +7,8 @@
  * Time: 10.52
  */
 
-include "User.php";
-include "UserDAO.php";
+require_once "User.php";
+require_once "UserDAO.php";
 require_once "UserUtil.php";
 
 class Login {
@@ -70,12 +70,8 @@ class Login {
    public function checkLoginInfo($connection) {
        $sanitized_username = $connection->real_escape_string($this->username);
 
-       //echo($sanitized_username);
-
        $user_dao = new UserDAO($connection);
        $user = $user_dao->readUser($sanitized_username);
-
-       //echo($user->getUsername());
 
        $hashed_password = UserUtil::hashPassword($this->password, $user->getSalt());
 
