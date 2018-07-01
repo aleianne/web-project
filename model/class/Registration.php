@@ -17,6 +17,7 @@ class Registration {
     private $username;
     private $password;
     private $emailPattern = "/^(([^<>()\[\]\\.,;:\s@\"]+(\.[^<>()\[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/";
+    private $passwordPattern = "/[a-z]([A-Z]|[0-9])|([A-Z]|[0-9])[a-z]|([A-Z]|[0-9])([A-Z]|[0-9])/";
 
     /**
      * @return mixed
@@ -74,6 +75,10 @@ class Registration {
         // check if the email is valid
         // TODO fare il check della mail
         if (preg_match($this->emailPattern, $escaped_username) == 0) {
+            return false;
+        }
+
+        if (preg_match($this->passwordPattern, $escaped_password) == 0) {
             return false;
         }
 

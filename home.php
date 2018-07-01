@@ -1,11 +1,11 @@
 <?php
-    if(empty($_SERVER['HTTPS']) || $_SERVER['HTTPS'] == "off"){
-        $redirect = 'https://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
-        header('HTTP/1.1 301 Moved Permanently');
-        header('Location: ' . $redirect);
-        exit();
-    }
-?>
+//    if(empty($_SERVER['HTTPS']) || $_SERVER['HTTPS'] == "off"){
+//        $redirect = 'https://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
+//        header('HTTP/1.1 301 Moved Permanently');
+//        header('Location: ' . $redirect);
+//        exit();
+//    }
+//?>
 
 <html lang="en">
 
@@ -178,7 +178,7 @@
 <!--        <!-- #toolbar-wrapper -->
 
 
-        <nav class="navbar navbar-default titlebar" style="border: none">
+        <nav class="navbar navbar-default titlebar" style="border: none; border-radius: 0px">
             <div class="container-fluid">
                 <div class="pull-right collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                     <button type="button" class="btn btn-default btn-lg" id="logout-button">
@@ -195,7 +195,14 @@
         <div class="container-fluid">
             <div class="row">
                 <div class="col-lg-12">
-                    <h1 id="home-page-title"></h1>
+                    <h1 id="home-page-title">
+                        <?php
+                            error_reporting(E_ERROR | E_PARSE);
+                            session_start();
+                            $user = $_SESSION["s239846_user"];
+                            echo "Welcome ".$user."!";
+                        ?>
+                    </h1>
                     <p>Welcome into this bus booking system, on the left menu you can find a form to submit your booking and a form to delete a booking</p>
                     <!--<p>This template has a responsive menu toggling system. The menu will appear collapsed on smaller screens, and will appear non-collapsed on larger screens. When toggled using the button below, the menu will appear/disappear. On small screens, the page content will be pushed off canvas.</p>
                     <p>Make sure to keep all page content within the <code>#page-content-wrapper</code>.</p>-->
@@ -258,7 +265,7 @@
 <!--                                        </div>-->
 <!--                                    </div>-->
                                     <div class="form-group" style="margin-right: 7%">
-                                        <input id="seat-number" type="text" class="form-control" placeholder="Seats number">
+                                        <input id="seats-number" type="text" class="form-control" placeholder="Seats number">
                                     </div>
                                     <button id="reservation-button" type="submit" class="btn btn-default">Submit</button>
                                 </div>
@@ -344,15 +351,19 @@
 
                                                 echo "<tr>";
                                                 echo "<td colspan='6' style='padding: 0'>";
-                                                echo "<div class='accordion-body collapse' id='".$counter."'>";
+                                                echo "<div class='accordion-body collapse row-style-collapsable' id='".$counter."'>";
 
-                                                while ($user_iterator->valid()) {
+                                                if ($user->count() == 0) {
+                                                    echo "<p><b>No user booked for this route</b></p>";
+                                                } else {
+                                                    while ($user_iterator->valid()) {
 
-                                                    echo "<p><b>User: </b>".$user_iterator->current()->getUsername();
-                                                    echo "	&nbsp;	&nbsp;";
-                                                    echo "<b>Booked seats: </b>".$user_iterator->current()->getBookedSeats()."</p>";
+                                                        echo "<p><b>User: </b>".$user_iterator->current()->getUsername();
+                                                        echo "	&nbsp;	&nbsp;";
+                                                        echo "<b>Booked seats: </b>".$user_iterator->current()->getBookedSeats()."</p>";
 
-                                                    $user_iterator->next();
+                                                        $user_iterator->next();
+                                                    }
                                                 }
 
                                                 echo "</div>";
@@ -396,6 +407,8 @@
                                             echo "<td><b>#</b></td>";
                                             echo "<td><b>Booking ID</b></td>";
                                             echo "<td><b>Reserved Seats</b></td>";
+                                            echo "<td><b>Departure Address</b></td>";
+                                            echo "<td><b>Arrival Address</b></td>";
                                             echo "</tr>";
 
                                             while($j->valid()) {
@@ -405,6 +418,8 @@
                                                 echo "<td>".$counter."</td>";
                                                 echo "<td>".$j->current()->getBookingId()."</td>";
                                                 echo "<td>".$j->current()->getReservedSeats()."</td>";
+                                                echo "<td style='color: red'>".$j->current()->getDepartureAddress()."</td>";
+                                                echo "<td style='color: red'>".$j->current()->getArrivalAddress()."</td>";
                                                 echo "<td><span id='".$j->current()->getBookingId()."' class='pull-right glyphicon glyphicon-remove' aria-hidden='true'></span></td>";
                                                 echo "</tr>";
                                                 $j->next();

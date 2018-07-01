@@ -32,26 +32,28 @@ class RouteDAO {
     }
 
     public function readFirstRoute() {
-        $query1 = "SELECT * FROM route ORDER BY route_id LIMIT 1";
+        $query1 = "SELECT departure_address, arrival_address, booked_seats, route_id FROM route ORDER BY route_id LIMIT 1";
 
         if ($query_result = $this->connection->query($query1)) {
 
-            $departure_address = $query_result->fetch_array(MYSQLI_ASSOC)["departure_address"];
+            $data = $query_result->fetch_array(MYSQLI_ASSOC);
+            $new_route = new Route($data["route_id"], $data["departure_address"], $data["arrival_address"], $data["booked_seats"]);
             $query_result->close();
-            return $departure_address;
+            return $new_route;
         } else {
             throw new DatabaseException("impossible to read a route, database error");
         }
     }
 
     public function readLastRoute() {
-        $query1 = "SELECT * FROM route ORDER BY route_id DESC LIMIT 1";
+        $query1 = "SELECT departure_address, arrival_address, booked_seats, route_id FROM route ORDER BY route_id DESC LIMIT 1";
 
         if ($query_result = $this->connection->query($query1)) {
 
-            $arrival_address = $query_result->fetch_array(MYSQLI_ASSOC)["departure_address"];
+            $data = $query_result->fetch_array(MYSQLI_ASSOC);
+            $new_route = new Route($data["route_id"], $data["departure_address"], $data["arrival_address"], $data["booked_seats"]);
             $query_result->close();
-            return $arrival_address;
+            return $new_route;
         } else {
             throw new DatabaseException("impossible to read a route, database error");
         }
@@ -165,7 +167,8 @@ class RouteDAO {
     public function updateRoute($departure_route, $arrival_route, $seats_num) {
         $query1 = "UPDATE route SET booked_seats = booked_seats + '$seats_num' "
             ."WHERE ('$departure_route' = LOWER(departure_address)) "
-            ."OR ('$departure_route' < LOWER(departure_address) AND '$arrival_route' >= LOWER(arrival_address)) "
+            ."OR ('$departure_route' < LOWER(departure_address) AND '$arrival_route' > LOWER(arrival_address)) "
+            ."OR ('$arrival_route' > LOWER(departure_address) AND '$arrival_route' < LOWER(arrival_address)) "
             ."OR ('$arrival_route' = LOWER(arrival_address))";
 
         if (!$query_result = $this->connection->query($query1)) {
@@ -176,7 +179,7 @@ class RouteDAO {
     public function updateRoute3($departure_route, $arrival_route, $seats_num) {
         $query1 = "UPDATE route SET booked_seats = booked_seats - '$seats_num' "
             ."WHERE ('$departure_route' = LOWER(departure_address)) "
-            ."OR ('$departure_route' < LOWER(departure_address) AND '$arrival_route' >= LOWER(arrival_address)) "
+            ."OR ('$departure_route' < LOWER(departure_address) AND '$arrival_route' > LOWER(arrival_address)) "
             ."OR '$arrival_route' = LOWER(arrival_address)";
 
         if (!$query_result = $this->connection->query($query1)) {

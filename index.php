@@ -1,11 +1,12 @@
 <?php
-    if(empty($_SERVER['HTTPS']) || $_SERVER['HTTPS'] == "off"){
-        $redirect = 'https://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
-        header('HTTP/1.1 301 Moved Permanently');
-        header('Location: ' . $redirect);
-        exit();
-    }
-?>
+//    if(empty($_SERVER['HTTPS']) || $_SERVER['HTTPS'] == "off"){
+//        $redirect = 'https://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
+//        header('HTTP/1.1 301 Moved Permanently');
+//        header('Location: ' . $redirect);
+//        exit();
+//    }
+//?>
+
 
 <!DOCTYPE html>
 <html lang="en" xmlns="http://www.w3.org/1999/html">
@@ -171,7 +172,7 @@
 <!--            </div>-->
 <!--        </nav>-->
 
-       <nav class="navbar navbar-default titlebar" style="border: none">
+       <nav class="navbar navbar-default titlebar" style="border: none; border-radius: 0px">
         <div class="container-fluid">
             <div class="navbar-header">
                 <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
@@ -206,7 +207,7 @@
                 </div>
             </div>
             <!-- #sencond row: list the data retrieved from the server -->
-            <div class="row">
+            <div class="row" id="list-div">
                 <div class="col-lg-12">
                     <!-- TODO AGGIUNGERE spazion nello span-->
                     <span></span>
@@ -370,9 +371,20 @@
                 loginSubmit();
         });
 
+        $(".glyphicon-repeat").click(function() {
+            $("#list-div").load("./index.php #list-div");
+            console.log("table reloaded")
+        });
+
         loginFormElement.find("input[name='email']").on("paste", function(e) {
             console.log("pasted");
         });
+
+//        $(window).on('hashchange',function() {
+//            interceptHome();
+//            $(".modalclose").trigger("click");
+//            $("#login-form").trigger("click");
+//        }).trigger('hashchange');
 
 
         $(".modalclose").click( function() {

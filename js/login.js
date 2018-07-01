@@ -174,6 +174,11 @@ function loginSubmit() {
 }
 
 
+function interceptHome() {
+    console.log("cioa");
+}
+
+
 
 
 

@@ -54,10 +54,10 @@ function reserveSeats(departureForm, arrivalForm) {
 
             switch(response) {
                 case "err_1":
-                    window.confirm("Error: DB returned an error")
+                    window.confirm("Error: DB returned an error");
                     break;
                 case "err_2":
-                    window.confirm("Error: is not possible to booking the journey")
+                    window.confirm("Error: is not possible to booking the journey");
                     break;
                 case "err_3":
                     /* trigger the login form */
@@ -78,10 +78,10 @@ function reserveSeats(departureForm, arrivalForm) {
                     window.confirm("wrong parameter");
                     break;
                 case "err_8":
-                    window.confirm("address are in reverse order");
+                    window.confirm("insert address error");
                     break;
                 default:
-                    window.confirm("error unknown");
+                    window.confirm("error unknown " + response);
                     break;
             }
         },

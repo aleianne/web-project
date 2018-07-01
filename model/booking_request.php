@@ -79,7 +79,7 @@
     $arrival = strtolower(strip_tags($arrival));
     $seats_number = strip_tags($seats_number);
 
-    if (strcmp($departure, $arrival) == 1) {
+    if (strcmp($departure, $arrival) >= 0) {
         die($server_response["address_err"]);
     }
 
@@ -121,6 +121,35 @@
     // disable the autocommit
     if (!$mysql_conn->autocommit(false))
         die($server_response['db_error']);
+
+
+
+    try {
+        $route_dao = new RouteDAO($mysql_conn);
+        $retrieved_array = $route_dao->readAllRoute();
+
+        $new_array = array();
+        $i = $retrieved_array->getIterator();
+
+        while($i->valid()) {
+            array_push($new_array, $i->current()->getDepartureAddress());
+            array_push($new_array, $i->current()->getArrivalAddress());
+            $i->next();
+        }
+
+        // sort and delete replicated value in the retrieved array;
+        $array1 = array_unique($new_array);
+        asort($array1);
+
+        if ((in_array($departure, $array1) && $departure_exists == false) || (in_array($arrival, $array1) && $arrival_exists == false)) {
+            die($server_response["address_err"]);
+        }
+
+    } catch (DatabaseException $de) {
+        $mysql_conn->close();
+        die("err_1");
+    }
+
 
     try {
         // strip all the parameter passed by the client and make lower case
